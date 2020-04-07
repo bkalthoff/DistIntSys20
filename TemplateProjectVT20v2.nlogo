@@ -7,7 +7,7 @@
 ;
 ;
 ;
-
+extensions [ vid ] ; used for recording simulation
 
 ; ************* GLOBAL VARIABLES *****************
 ;globals []
@@ -44,6 +44,7 @@ to setup
   ; setup-adult
   ;
   reset-ticks
+  if vid:recorder-status = "recording" [ vid:record-view ]
 end
 
 ; to setup-territories ; create living-areas
@@ -80,6 +81,7 @@ to go
   ; what adult is doing
   ;
   tick
+  if vid:recorder-status = "recording" [ vid:record-view ]
 end
 
 ; ----------- AGENT'S PART -------------
@@ -119,6 +121,41 @@ end
 
 
 ; **************************
+
+
+; code for vid-recording of simulation
+to start-recorder
+  carefully [ vid:start-recorder ] [ user-message error-message ]
+end
+
+to reset-recorder
+  let message (word
+    "If you reset the recorder, the current recording will be lost."
+    "Are you sure you want to reset the recorder?")
+  if vid:recorder-status = "inactive" or user-yes-or-no? message [
+    vid:reset-recorder
+  ]
+end
+
+to save-recording
+  if vid:recorder-status = "inactive" [
+    user-message "The recorder is inactive. There is nothing to save."
+    stop
+  ]
+  ; prompt user for movie location
+  user-message (word
+    "Choose a name for your movie file (the "
+    ".mp4 extension will be automatically added).")
+  let path user-new-file
+  if not is-string? path [ stop ]  ; stop if user canceled
+  ; export the movie
+  carefully [
+    vid:save-recording path
+    user-message (word "Exported movie to " path ".")
+  ] [
+    user-message error-message
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -146,6 +183,102 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+BUTTON
+24
+642
+134
+675
+start-recorder
+start-recorder
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+156
+641
+268
+674
+reset-recorder
+reset-recorder
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+27
+686
+268
+731
+NIL
+vid:recorder-status
+3
+1
+11
+
+BUTTON
+29
+744
+262
+777
+save-recording
+save-recording
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+17
+23
+80
+56
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+93
+25
+156
+58
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
