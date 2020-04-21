@@ -160,7 +160,7 @@ end
 
 
 
-to recruit-attempt
+to child-gangster-recruit-attempt
   face child-to-recruit
     ifelse(distance child-to-recruit > 1)[
      forward 0.1
@@ -229,7 +229,7 @@ end
 ;  
 ;end
 
-to go-to-stash-house
+to child-gangster-go-to-stash-house
   face drugAdress
   forward 0.1
   
@@ -240,7 +240,7 @@ to go-to-stash-house
   ]
 end
 
-to transport-drugs
+to child-gangster-transport-drugs
   face drugAdress
   forward 0.1
   
