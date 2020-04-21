@@ -17,11 +17,11 @@ adult-gangsters-own [
 to setup-adult-Gangster
   
   let Q number-of-adult-gangsters
-  ask n-of Q patches with [pcolor = brown - 3]
+  ask n-of Q patches with [pcolor = brown]
   [sprout-adult-gangsters Q [ set shape "gangster" set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
-  ask n-of Q patches with [pcolor = yellow - 3]
+  ask n-of Q patches with [pcolor = red]
   [sprout-adult-gangsters Q [set shape "gangster" set next-task [ -> adult-gangster-idle]]sprout-gangster-homes 1 [set shape "house" set color brown]]
-  ask n-of Q patches with [pcolor = sky + 1]
+  ask n-of Q patches with [pcolor = blue]
   [sprout-adult-gangsters Q [
     set shape "gangster"
 
@@ -133,7 +133,7 @@ end
 ; recruit adults to join gang
 to adult-gangster-work
   ifelse stoppedByAdult = "true" [set next-task [-> drug-order]][ ; when gangster is stopped, adult changes variables in gangster
-    ifelse [pcolor] of patch-ahead 0.25 = orange
+    ifelse [pcolor] of patch-ahead 0.25 = gray
     [lt random-float 180]
     [right random 30  left random 30  forward 0.25 ]                             ; right now they only walk around, but they do not walk in the prison
   ]
