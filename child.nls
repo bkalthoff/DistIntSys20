@@ -32,12 +32,12 @@ to setup-agent-child
     set leavingOffset who * 3
     set speed ((random 3) + 2) / distance schoolAdress
     set tickStandStill 0
-    set next-task [ -> at-home ]
+    set next-task [ -> child-at-home ]
     
   ]
 end
 
-to turn-to-child-gangster
+to child-turn-to-child-gangster
   face recruiter
   
   ifelse(distance recruiter > 1)[
@@ -51,7 +51,7 @@ to turn-to-child-gangster
   ]
 end
 
-to go-to-school
+to child-go-to-school
   face schoolAdress
   set directionOffset random 100 + random -100
   set heading heading + directionOffset
@@ -63,7 +63,7 @@ to go-to-school
   ]
 end
 
-to in-school
+to child-in-school
   if (time + leavingOffset = 1600)[
     set hidden? false
     set recruitAttempt? false
@@ -71,7 +71,7 @@ to in-school
   ]
 end
 
-to go-home
+to child-go-home
   face homeAdress
   set directionOffset random 100 + random -100
   set heading heading + directionOffset
@@ -83,7 +83,7 @@ to go-home
   ]
 end
 
-to out-playing
+to child-out-playing
  face one-of patches with [pcolor = grey]
  forward random 3 / 10
 
@@ -92,7 +92,7 @@ to out-playing
   ]
 end
 
-to at-home
+to child-at-home
 
   if (time + leavingOffset = 1900)[
    set hidden? false
