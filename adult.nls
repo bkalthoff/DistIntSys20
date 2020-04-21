@@ -1,0 +1,166 @@
+adults-own [
+  dest
+  job?
+  drugUser?
+  money
+  homexy
+  homeArea
+  state
+]
+
+to setup-adults
+  create-adults 10 [
+    setxy 0 0
+    set color white
+    set shape "person"
+    set size 2
+    set next-task [ -> go-home ]
+    set money 100
+    set label homeArea
+    set label-color green
+    set job? one-of [true false]
+    set drugUser? one-of [true false]
+    set homexy array:from-list n-values 2 [0]
+    set homeArea 1 + random 3
+    moving homeArea
+  ]
+end
+
+to go-home
+  set state "home"
+
+  ifelse(job? = true)
+  [
+
+    ifelse(ticks mod 500 = 0)
+    [
+      set dest [-> work]
+      set next-task [-> walk 1 8]
+    ]
+
+    [
+      if(drugUser? = true) and (random 500 = 0)
+      [
+        set next-task [-> consuming-drugs]
+      ]
+
+    ]
+  ]
+
+  [
+    forward 0.5
+    right random 45
+    left random 45
+
+    if random 1000 = 0
+    [
+      set job? true
+      set dest [-> go-home]
+      set next-task [-> walk array:item homexy 0 array:item homexy 1]
+    ]
+  ]
+
+end
+
+to work
+  set state "work"
+  ifelse (random 500 = 0)
+  [
+    set dest [-> go-home]
+    set next-task [-> walk array:item homexy 0 array:item homexy 1]
+  ]
+
+  [
+    ;get payed
+    ;rotate
+  ]
+end
+
+to walk [destx desty]
+    set state "walk"
+  ifelse distancexy destx desty <= 1[
+      set next-task dest
+  ]
+    [
+        move-turtle-pos self destx desty
+    ]
+
+end
+
+to losing-job
+end
+
+to moving [area]
+
+    if area = 1[
+      array:set homexy 0 11
+      array:set homexy 1 11
+
+      set next-task[-> go-home]
+
+  ]
+
+    if area = 2[ ;;middleclass
+      array:set homexy 0 -11
+      array:set homexy 1 11
+
+      set next-task[-> go-home]
+
+  ]
+
+    if area = 3[ ;;lowerclass
+      array:set homexy 0 11
+      array:set homexy 1 -11
+
+      set next-task[-> go-home]
+  ]
+
+end
+
+to consuming-drugs
+  set state "Consuming-drugs"
+
+  ifelse random 100 = 0 and job? = true
+  [
+    set job? false
+    ifelse homeArea < 3
+    [
+      set color red
+      set homeArea homeArea + 1
+      set next-task [-> moving homeArea]
+    ]
+    [
+       set color orange
+       set next-task[-> go-home]
+    ]
+
+  ]
+
+  [
+    set color yellow
+    set dest [-> go-home]
+    set next-task[-> walk array:item homexy 0 array:item homexy 1 ]
+
+  ]
+
+end
+
+to go-to-prison
+end
+
+to get-paid
+end
+
+to spend-money
+end
+
+to move-turtle-pos [source destx desty]
+
+  ask source [
+    if distancexy destx desty > 1 [
+      facexy destx desty
+      forward 0.5
+    ]
+  ]
+
+end
