@@ -1,0 +1,79 @@
+breed [ police a-police ]
+
+police-own [
+  next-task
+  person-to-search
+  search-tick
+  someoneAskedForHelp
+]
+
+to setup-police
+  
+  create-police 3
+  [
+    set shape  "person police"
+    set color blue
+    set search-tick 0
+    set size 2
+    setxy random-xcor random abs 11
+    set next-task [ -> move-police ]
+  ]
+  
+end
+
+to idle
+  run next-task
+end
+
+to move-police
+    ifelse abs xcor > 15 or ycor <= -10 or ycor > 14 [
+      set heading towards patch 0 0
+    ]
+    [
+      right random 45
+      left random 45
+    ]
+    forward 0.5
+
+  ifelse any? (adults-here with [ stopped = 0 ]) [
+    let target one-of adults-here
+    ask target [ set stopped 1 ]
+    set person-to-search target
+    set next-task [ -> search-person ]
+  ][
+    if [is-hiding-place] of patch-here = true [
+      set next-task [ -> search-place ]
+    ]
+  ]
+
+end
+
+to search-person
+  set search-tick search-tick + 1
+  ;let target one-of (adults-here with [ stoped = 1 ])
+  if search-tick = 10[
+    ask person-to-search [
+      ifelse drugs > 0 [
+        set color grey
+        set drugs 0
+        set arrested-time ticks
+      ]
+      [
+        set stopped 0
+      ]
+    ]
+    ifelse [ arrested-time ] of person-to-search != -1 [
+      set next-task [ -> go-to-prison ]
+    ]
+    [ set next-task [ -> move-police ] ]
+    set search-tick 0
+  ]
+end
+
+to go-to-prison
+  ifelse distance min-one-of (jail-region) [distance myself] > 1 [
+    set heading towards-nowrap min-one-of (jail-region) [distance myself]
+    forward 0.5
+  ]
+  [ set next-task [ -> move-police ] ]
+end
