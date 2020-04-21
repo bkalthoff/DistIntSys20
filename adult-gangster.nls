@@ -73,7 +73,7 @@ to adult-gangster-idle
      let policeClose polices in-cone 4 35                                               ; see if there is police in the gangsters line of sight
      ifelse any? policeClose [set next-task [ -> adult-gangster-hide]]   [              ; police is in line of sight hide
         ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]][ ; if everything is fine and it is day continue working
-          set next-task[ -> go-home ]                                                   ; if its night go home
+          set next-task[ -> adult-gangster-go-home ]                                                   ; if its night go home
         ]
      ]
    ]
@@ -84,7 +84,7 @@ end
 ; the gangsters does not have a home right now
 ; so during the night they are just standing still
 ;
-to go-home
+to adult-gangster-go-home
   
   if (distancexy array:item homexy 0 array:item homexy 1 > 1)
   [set heading towardsxy array:item homexy 0 array:item homexy 1
