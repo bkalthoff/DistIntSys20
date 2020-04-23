@@ -353,10 +353,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-15
-268
-205
-301
+4
+123
+194
+156
 number-of-adultGangster
 number-of-adultGangster
 0
@@ -398,10 +398,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-14
-129
-186
-162
+15
+267
+187
+300
 number-of-adult
 number-of-adult
 0

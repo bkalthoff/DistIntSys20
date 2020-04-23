@@ -16,14 +16,14 @@ adult-gangsters-own [
 ; the set up needs to implement the new terretories, 
 to setup-adult-Gangster
   
-  let Q number-of-adult-gangsters
+  let Q 1
   ask n-of Q patches with [pcolor = brown]
-  [sprout-adult-gangsters Q [ set shape "gangster" set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
+  [sprout-adult-gangsters Q [ set shape "person" set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
   ask n-of Q patches with [pcolor = red]
-  [sprout-adult-gangsters Q [set shape "gangster" set next-task [ -> adult-gangster-idle]]sprout-gangster-homes 1 [set shape "house" set color brown]]
+  [sprout-adult-gangsters Q [set shape "person" set next-task [ -> adult-gangster-idle]]sprout-gangster-homes 1 [set shape "house" set color brown]]
   ask n-of Q patches with [pcolor = blue]
   [sprout-adult-gangsters Q [
-    set shape "gangster"
+    set shape "person"
 
     set next-task [ -> adult-gangster-idle]    
     ]
@@ -35,7 +35,7 @@ to setup-adult-Gangster
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
-    set gangster-hideout hideout random 4 
+    ;set gangster-hideout hideout random 4 
   ]
 
 end
@@ -53,12 +53,7 @@ to setup-hidingplaces
     set next-task ""
   ]
 
-
 end
-
-
-
-
 
 
 
@@ -70,13 +65,14 @@ end
 to adult-gangster-idle
     ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
      ;set hidden? false                                                ; for demo purpose
-     let policeClose polices in-cone 4 35                                               ; see if there is police in the gangsters line of sight
-     ifelse any? policeClose [set next-task [ -> adult-gangster-hide]]   [              ; police is in line of sight hide
-        ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]][ ; if everything is fine and it is day continue working
-          set next-task[ -> adult-gangster-go-home ]                                                   ; if its night go home
-        ]
+     let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
+     ifelse any? policeClose [set next-task [ -> adult-gangster-hide]] [              ; police is in line of sight hide
      ]
+     
+   
    ]
+ ; <------------------------------------------ astronomical-day-state = "day" doesnt work  old code ---- ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]
+
 end
 
 

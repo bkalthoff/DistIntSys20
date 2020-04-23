@@ -3,6 +3,9 @@ breed [ child-gangsters child-gangster ]
 
 
 child-gangsters-own [
+  homeAdress
+  
+  next-task
   schoolAdress
   drugAdress
   status
@@ -21,24 +24,25 @@ child-gangsters-own [
 
 to setup-agent-child-gangster
   set-default-shape child-gangsters "person"
-  create-ordered-child-gangsters number-of-child-gangsters [
+  create-ordered-child-gangsters 3 [ ; number-of-child-gangsters changed to integer
     ;let greyPatch one-of patches with [ pcolor = grey ]
     ;setxy [ pxcor ] of greyPatch [ pycor ] of greyPatch
-    set homeAdress one-of houses
-    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
-    set schoolAdress min-one-of schools [ distance myself ]
-    set birthDay 1 + random 9
-    set age 5 + random 5
+   ; set homeAdress one-of houses
+    ;setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
+  ;  set schoolAdress min-one-of schools [ distance myself ]
+    ;set birthDay 1 + random 9
+    ;set age 5 + random 5
     set color red
     set status 10 + random 5
-    set label age
+   ; set label age
     set recruits 0
     set skipAttempt? false
     set carriesDrug? false
     set slinging? false
     set hidden? true
     set leavingOffset who * 3
-    set speed ((random 3) + 2) / distance schoolAdress
+    set speed 1
+    ;set speed ((random 3) + 2) / distance schoolAdress
     set next-task [ -> child-gangster-at-home ]
   ]
 end
@@ -75,11 +79,11 @@ to child-gangster-walk-around
     set recruitAttempt? true
 
 
-    set-next-task[-> turn-to-child-gangster]
+    set-next-task[-> child-turn-to-child-gangster]
 
     ask temp-child-gangster [
       set child-to-recruit temp-child-to-recruit
-      set next-task [-> recruit-attempt]
+      set next-task [-> child-gangster-recruit-attempt]
     ]
 
 
@@ -89,7 +93,7 @@ to child-gangster-walk-around
   
       ifelse (slinging? = true)[
     
-        set next-task [-> go-to-stash-house]
+        set next-task [-> child-gangster-go-to-stash-house]
 
   ] [
         
@@ -103,7 +107,10 @@ to child-gangster-walk-around
   ] 
 end
 
-
+to set-next-task [next]
+  set previous-task next-task
+  set next-task next
+end
 
 
 
@@ -171,7 +178,7 @@ to child-gangster-recruit-attempt
       let roll random 150
       
       if(status > roll)[
-        link-agents self child-to-recruit
+      ;  link-agents self child-to-recruit
         set status status + 10
         
         ask child-to-recruit[
@@ -236,7 +243,7 @@ to child-gangster-go-to-stash-house
   if(distance drugAdress < 1)[
     set carriesDrug? true
     set drugAdress one-of stash-houses
-    set next-task [-> transport-drugs]
+    set next-task [-> child-gangster-transport-drugs]
   ]
 end
 

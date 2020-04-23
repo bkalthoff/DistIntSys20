@@ -1,8 +1,7 @@
-breed [ children child ]
-
 
 
 children-own [
+  next-task
   schoolAdress
   childGangstersMet
   leavingOffset
@@ -20,17 +19,19 @@ children-own [
 to setup-agent-child
   set-default-shape children "person"
   create-children number-of-children [
-    set homeAdress one-of houses
-    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
-    set schoolAdress min-one-of schools [ distance myself ]
-    set birthDay 1 + random 9
-    set age 5 + random 5
+   ; set homeAdress one-of houses
+   
+   ; setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
+  ;  set schoolAdress min-one-of schools [ distance myself ]
+   ; set birthDay 1 + random 9
+  ;  set age 5 + random 5
     set childGangstersMet 0
     set color white
     set hidden? true
     set recruitAttempt? false
     set leavingOffset who * 3
-    set speed ((random 3) + 2) / distance schoolAdress
+   set speed 1
+    ; set speed ((random 3) + 2) / distance schoolAdress
     set tickStandStill 0
     set next-task [ -> child-at-home ]
     
@@ -59,7 +60,7 @@ to child-go-to-school
 
   if (distance schoolAdress < speed)[
     set hidden? true
-    set next-task[-> in-school]
+    set next-task[-> child-in-school]
   ]
 end
 
@@ -67,7 +68,7 @@ to child-in-school
   if (time + leavingOffset = 1600)[
     set hidden? false
     set recruitAttempt? false
-    set next-task[-> go-home]
+    set next-task[-> child-go-home]
   ]
 end
 
@@ -79,7 +80,7 @@ to child-go-home
 
   if (distance homeAdress < speed)[
     set hidden? true
-    set next-task[-> at-home]
+    set next-task[-> child-at-home]
   ]
 end
 
@@ -88,7 +89,7 @@ to child-out-playing
  forward random 3 / 10
 
  if (time + leavingOffset > 2300 or time + leavingOffset < 400)[
-    set next-task [-> go-home]
+    set next-task [-> child-go-home]
   ]
 end
 
@@ -97,12 +98,12 @@ to child-at-home
   if (time + leavingOffset = 1900)[
    set hidden? false
    set recruitAttempt? false
-   set next-task[-> out-playing]
+   set next-task[-> child-out-playing]
   ]
 
   if (time + leavingOffset = 900)[
     set hidden? false
     set recruitAttempt? false
-    set next-task[-> go-to-school]
+    set next-task[-> child-go-to-school]
   ]
 end

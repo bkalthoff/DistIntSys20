@@ -1,4 +1,5 @@
 adults-own [
+  next-task
   dest
   job?
   drugUser?
@@ -82,7 +83,7 @@ to adults-walk [destx desty]
       set next-task dest
   ]
     [
-        move-turtle-pos self destx desty
+       adults-move-turtle-pos self destx desty
     ]
 
 end
@@ -139,7 +140,7 @@ to adults-consuming-drugs
   [
     set color yellow
     set dest [-> adults-go-home]
-    set next-task[-> walk array:item homexy 0 array:item homexy 1 ]
+    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
 
   ]
 
