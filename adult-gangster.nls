@@ -11,6 +11,7 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
+  drugOrders
 ]
 
 ; the set up needs to implement the new terretories, 

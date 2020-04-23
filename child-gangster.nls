@@ -4,7 +4,6 @@ breed [ child-gangsters child-gangster ]
 
 child-gangsters-own [
   homeAdress
-  
   next-task
   schoolAdress
   drugAdress
@@ -20,7 +19,9 @@ child-gangsters-own [
   leavingOffset
   directionOffset
   randomGreyPatch
+  stoppedByPolice
 ]
+
 
 to setup-agent-child-gangster
   set-default-shape child-gangsters "person"

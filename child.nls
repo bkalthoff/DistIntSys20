@@ -11,7 +11,7 @@ children-own [
   tickStandStill
   recruiter
   previous-task
-
+  stoppedByPolice
 ]
 
 
