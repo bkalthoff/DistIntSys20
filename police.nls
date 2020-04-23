@@ -4,6 +4,7 @@ police-own [
   person-to-search
   search-tick
   someoneAskedForHelp
+  turtleToFollow
 ]
 
 to setup-police
@@ -14,6 +15,7 @@ to setup-police
     set color blue
     set search-tick 0
     set size 2
+    set turtleToFollow 0
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
   ]
@@ -33,6 +35,8 @@ to move-police
       left random 45
     ]
     forward 0.5
+  
+    set next-task [ -> lookForNewTurtleToFollow ]
 
 ;  ifelse any? (adults-here with [ stopped = 0 ]) [
 ;    let target one-of adults-here
@@ -49,7 +53,7 @@ end
 
 to search-person
 ;  set search-tick search-tick + 1
-;  ;let target one-of (adults-here with [ stoped = 1 ])
+;  let target one-of (adults-here with [ stoped = 1 ])
 ;  if search-tick = 10[
 ;    ask person-to-search [
 ;      ifelse drugs > 0 [
@@ -67,6 +71,39 @@ to search-person
 ;    [ set next-task [ -> move-police ] ]
 ;    set search-tick 0
 ;  ]
+end
+
+to lookForNewTurtleToFollow
+  if turtleToFollow = 0[
+    set turtleToFollow min-one-of adults with [stoppedByPolice = false] in-radius 100 [distance myself]
+  ]
+  ifelse turtleToFollow = NOBODY[
+    set turtleToFollow 0
+    set next-task [ -> move-police ]
+  ][
+    set next-task [ -> chaseTurtle ]
+  ]
+end
+
+to chaseTurtle
+  if turtleToFollow != 0[
+    face turtleToFollow
+    forward 0.5
+    set next-task [ -> stopFollowingIfStopped ]
+  ]
+end
+
+to stopFollowingIfStopped
+  if turtleToFollow != 0[
+    ask turtleToFollow[
+      ifelse stoppedByPolice = true[
+        set turtleToFollow 0
+        set next-task [ -> move-police ]
+      ][
+        set next-task [ -> chaseTurtle ]
+      ]
+    ]
+  ]
 end
 
 to go-to-prison
