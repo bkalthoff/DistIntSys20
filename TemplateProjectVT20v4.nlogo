@@ -8,7 +8,7 @@
 ;
 ;
 ;
-__includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls"]
+__includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls" "adult-gangster-lists.nls"]
 
 
 extensions [
@@ -210,9 +210,6 @@ to save-recording
   ]
 end
 
-
-
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -361,7 +358,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-19.0
+6.0
 1
 1
 NIL

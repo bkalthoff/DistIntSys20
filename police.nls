@@ -16,6 +16,7 @@ to setup-police
     set size 2
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
+    
   ]
   
 end

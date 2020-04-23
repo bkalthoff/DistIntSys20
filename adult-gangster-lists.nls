@@ -1,0 +1,12 @@
+to setupGangmembers [gangcolor]
+   set gangMembers [self] of adult-gangsters with [gang = gangcolor]
+end
+
+to addGangmember [member]
+  set gangMembers lput member gangMembers 
+  
+end
+
+to removeGangmember[member]
+  set gangMembers remove member gangMembers
+end

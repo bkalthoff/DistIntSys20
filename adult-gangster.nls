@@ -11,31 +11,32 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
+  gangMembers
+  gang
 ]
 
 ; the set up needs to implement the new terretories, 
 to setup-adult-Gangster
   
-  let Q 1
+  let Q number-of-adultGangster 
   ask n-of Q patches with [pcolor = brown]
-  [sprout-adult-gangsters Q [ set shape "person" set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
+  [sprout-adult-gangsters 1 [ set shape "person" ifelse random 100 < 49 [set gang red] [set gang blue] set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
+  
   ask n-of Q patches with [pcolor = red]
-  [sprout-adult-gangsters Q [set shape "person" set next-task [ -> adult-gangster-idle]]sprout-gangster-homes 1 [set shape "house" set color brown]]
+  
+  [sprout-adult-gangsters 1 [set shape "person" ifelse random 100 < 49 [set gang red] [set gang blue]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
   ask n-of Q patches with [pcolor = blue]
-  [sprout-adult-gangsters Q [
-    set shape "person"
-
-    set next-task [ -> adult-gangster-idle]    
-    ]
-    sprout-gangster-homes 1 [      
-      set shape "house" set color brown
-    ]  
-  ]
+    [sprout-adult-gangsters 1 [ set shape "person" ifelse random 100 < 49 [set gang red] [set gang blue]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
  
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
     set gangster-hideout hideout random 2
+    ifelse gang = red
+    [setupGangmembers red]
+    [setupGangmembers blue]
+    
+    print self print gangMembers
   ]
 
 end
