@@ -1,5 +1,6 @@
 adults-own [
   next-task
+  previous-task
   dest
   job?
   drugUser?
@@ -7,6 +8,10 @@ adults-own [
   homexy
   homeArea
   state
+  stoppedByPolice
+  hasDrugs?
+  arrested-time
+  orderedDrugs?
 ]
 
 to setup-adults
@@ -24,6 +29,9 @@ to setup-adults
     set homexy array:from-list n-values 2 [0]
     set homeArea 1 + random 3
     adults-moving homeArea
+    set hasDrugs? false
+    set stoppedByPolice 0
+    set arrested-time -1
   ]
 end
 
@@ -40,9 +48,9 @@ to adults-go-home
     ]
 
     [
-      if(drugUser? = true) and (random 500 = 0)
+      if(drugUser? = true) and (random 50 = 0)
       [
-        set next-task [-> adults-consuming-drugs]
+        set next-task [ -> adults-consuming-drugs ]
       ]
 
     ]
@@ -120,28 +128,24 @@ end
 
 to adults-consuming-drugs
   set state "Consuming-drugs"
-
-  ifelse random 100 = 0 and job? = true
+  
+  ifelse (orderedDrugs? = false)
   [
-    set job? false
-    ifelse homeArea < 3
-    [
-      set color red
-      set homeArea homeArea + 1
-      set next-task [-> adults-moving homeArea]
+    set orderedDrugs? true
+    ;order the drugs
+    ask adult-gangsters[
+    
+      set drugOrders lput myself drugOrders
+      
     ]
-    [
-       set color orange
-       set next-task[-> adults-go-home]
-    ]
-
+     set dest [-> adults-go-home]
+     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
-
+  
+  
   [
-    set color yellow
-    set dest [-> adults-go-home]
-    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
-
+    ;get the drugs
+    set hasDrugs? true
   ]
 
 end
@@ -164,4 +168,31 @@ to adults-move-turtle-pos [source destx desty]
     ]
   ]
 
+end
+
+to adults-stopped-by-police
+  set state "stopped"
+  if stoppedByPolice = 0 [
+    set next-task previous-task
+  ]
+  if arrested-time != -1 [
+    set next-task [ -> adults-go-to-jail ]
+    set state "jail"
+  ]
+end
+
+to adults-go-to-jail
+  ifelse distancexy -11 -11 > 1 [
+    set heading towardsxy-nowrap  -11 -11
+    forward 0.5
+  ]
+  [
+    if ticks - arrested-time = 2000 [
+      set arrested-time -1
+      set color white
+      set stoppedByPolice 0
+      set dest [-> adults-go-home]
+      set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    ]
+  ]
 end

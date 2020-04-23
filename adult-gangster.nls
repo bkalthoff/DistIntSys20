@@ -11,8 +11,12 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
+<<<<<<< HEAD
   gangMembers
   gang
+=======
+  drugOrders
+>>>>>>> police-stop
 ]
 
 ; the set up needs to implement the new terretories, 
