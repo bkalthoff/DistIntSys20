@@ -32,11 +32,11 @@ to setup-adult-Gangster
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
     set gangster-hideout hideout random 2
-    ;ifelse gang = red
-   ; [setupGangmembers red]
-    ;[setupGangmembers blue]
+    ifelse gang = red
+    [setupGangmembers red]
+    [setupGangmembers blue]
     
-    print self 
+    print self print gangMembers
   ]
 
 end
