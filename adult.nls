@@ -14,7 +14,7 @@ to setup-adults
     set color white
     set shape "person"
     set size 2
-    set next-task [ -> go-home ]
+    set next-task [ -> adults-go-home ]
     set money 100
     set label homeArea
     set label-color green
@@ -22,11 +22,11 @@ to setup-adults
     set drugUser? one-of [true false]
     set homexy array:from-list n-values 2 [0]
     set homeArea 1 + random 3
-    moving homeArea
+    adults-moving homeArea
   ]
 end
 
-to go-home
+to adults-go-home
   set state "home"
 
   ifelse(job? = true)
@@ -34,14 +34,14 @@ to go-home
 
     ifelse(ticks mod 500 = 0)
     [
-      set dest [-> work]
-      set next-task [-> walk 1 8]
+      set dest [-> adults-work]
+      set next-task [-> adults-walk 1 8]
     ]
 
     [
       if(drugUser? = true) and (random 500 = 0)
       [
-        set next-task [-> consuming-drugs]
+        set next-task [-> adults-consuming-drugs]
       ]
 
     ]
@@ -55,19 +55,19 @@ to go-home
     if random 1000 = 0
     [
       set job? true
-      set dest [-> go-home]
-      set next-task [-> walk array:item homexy 0 array:item homexy 1]
+      set dest [-> adults-go-home]
+      set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
     ]
   ]
 
 end
 
-to work
+to adults-work
   set state "work"
   ifelse (random 500 = 0)
   [
-    set dest [-> go-home]
-    set next-task [-> walk array:item homexy 0 array:item homexy 1]
+    set dest [-> adults-go-home]
+    set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
   ]
 
   [
@@ -76,7 +76,7 @@ to work
   ]
 end
 
-to walk [destx desty]
+to adults-walk [destx desty]
     set state "walk"
   ifelse distancexy destx desty <= 1[
       set next-task dest
@@ -87,16 +87,16 @@ to walk [destx desty]
 
 end
 
-to losing-job
+to adults-losing-job
 end
 
-to moving [area]
+to adults-moving [area]
 
     if area = 1[
       array:set homexy 0 11
       array:set homexy 1 11
 
-      set next-task[-> go-home]
+      set next-task[-> adults-go-home]
 
   ]
 
@@ -104,7 +104,7 @@ to moving [area]
       array:set homexy 0 -11
       array:set homexy 1 11
 
-      set next-task[-> go-home]
+      set next-task[-> adults-go-home]
 
   ]
 
@@ -112,12 +112,12 @@ to moving [area]
       array:set homexy 0 11
       array:set homexy 1 -11
 
-      set next-task[-> go-home]
+      set next-task[-> adults-go-home]
   ]
 
 end
 
-to consuming-drugs
+to adults-consuming-drugs
   set state "Consuming-drugs"
 
   ifelse random 100 = 0 and job? = true
@@ -127,34 +127,34 @@ to consuming-drugs
     [
       set color red
       set homeArea homeArea + 1
-      set next-task [-> moving homeArea]
+      set next-task [-> adults-moving homeArea]
     ]
     [
        set color orange
-       set next-task[-> go-home]
+       set next-task[-> adults-go-home]
     ]
 
   ]
 
   [
     set color yellow
-    set dest [-> go-home]
+    set dest [-> adults-go-home]
     set next-task[-> walk array:item homexy 0 array:item homexy 1 ]
 
   ]
 
 end
 
-to go-to-prison
+to adults-go-to-prison
 end
 
-to get-paid
+to adults-get-paid
 end
 
-to spend-money
+to adults-spend-money
 end
 
-to move-turtle-pos [source destx desty]
+to adults-move-turtle-pos [source destx desty]
 
   ask source [
     if distancexy destx desty > 1 [
