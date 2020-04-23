@@ -35,7 +35,7 @@ to setup-adult-Gangster
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
-    ;set gangster-hideout hideout random 4 
+    set gangster-hideout hideout random 2
   ]
 
 end
@@ -45,7 +45,7 @@ end
 
 to setup-hidingplaces
   
-  create-hidingplaces 5 [ 
+  create-hidingplaces 2 [ 
     set shape "house"
     set color green
     set size 2
