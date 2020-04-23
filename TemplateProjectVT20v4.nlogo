@@ -8,7 +8,7 @@
 ;
 ;
 ;
-__includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls"]
+__includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls" "adult-gangster-lists.nls"]
 
 
 extensions [
@@ -209,8 +209,6 @@ to save-recording
     user-message error-message
   ]
 end
-
-
 
 
 @#$#@#$#@
