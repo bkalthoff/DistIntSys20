@@ -210,7 +210,6 @@ to save-recording
   ]
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -359,7 +358,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-19.0
+6.0
 1
 1
 NIL
