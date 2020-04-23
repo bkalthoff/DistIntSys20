@@ -11,6 +11,7 @@
 __includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls"]
 
 
+
 extensions [
 vid
 array ] ; used for recording simulation
@@ -212,7 +213,6 @@ end
 
 
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -346,17 +346,17 @@ number-of-children
 number-of-children
 0
 40
-15.0
+18.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-4
-123
-194
-156
+15
+268
+205
+301
 number-of-adultGangster
 number-of-adultGangster
 0
@@ -398,10 +398,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-15
-267
-187
-300
+14
+129
+186
+162
 number-of-adult
 number-of-adult
 0
