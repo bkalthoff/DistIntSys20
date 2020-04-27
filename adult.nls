@@ -12,6 +12,11 @@ adults-own [
   hasDrugs?
   arrested-time
   orderedDrugs?
+  
+  inPrison?
+  pickUpPlace
+  drugsDelivered?
+  
 ]
 
 to setup-adults
@@ -29,9 +34,15 @@ to setup-adults
     set homexy array:from-list n-values 2 [0]
     set homeArea 1 + random 3
     adults-moving homeArea
+    
     set hasDrugs? false
     set stoppedByPolice 0
     set arrested-time -1
+    set pickUpPlace array:from-list n-values 2 [0]
+    set orderedDrugs? false
+    set inPrison? false
+    set drugsDelivered? false
+    
   ]
 end
 
@@ -48,7 +59,7 @@ to adults-go-home
     ]
 
     [
-      if(drugUser? = true) and (random 50 = 0)
+      if(drugUser? = true) and (random 50 = 0) or (orderedDrugs? = true)
       [
         set next-task [ -> adults-consuming-drugs ]
       ]
@@ -133,7 +144,7 @@ to adults-consuming-drugs
   [
     set orderedDrugs? true
     ;order the drugs
-    ask adult-gangsters[
+    ask one-of adult-gangsters with[isWorking? = true ][ 
     
       set drugOrders lput myself drugOrders
       

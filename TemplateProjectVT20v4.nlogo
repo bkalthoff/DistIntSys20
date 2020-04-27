@@ -52,7 +52,7 @@ gangster-homes-own[
 ]
 
 hidingplaces-own [
-  contraband
+  weapons
   drugs
   next-task
 ]
@@ -210,11 +210,6 @@ to save-recording
   ]
 end
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> police-stop
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -363,7 +358,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-6.0
+10.0
 1
 1
 NIL

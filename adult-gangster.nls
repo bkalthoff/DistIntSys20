@@ -11,12 +11,12 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
-<<<<<<< HEAD
+
   gangMembers
   gang
-=======
+
   drugOrders
->>>>>>> police-stop
+  isWorking?
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -40,7 +40,10 @@ to setup-adult-Gangster
     [setupGangmembers red]
     [setupGangmembers blue]
     
-    print self print gangMembers
+    set isWorking? false
+    set drugOrders[]
+    
+    ;print self print gangMembers
   ]
 
 end
@@ -71,7 +74,8 @@ to adult-gangster-idle
     ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
      ;set hidden? false                                                ; for demo purpose
      let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
-     ifelse any? policeClose [set next-task [ -> adult-gangster-hide]] [              ; police is in line of sight hide
+     ifelse any? policeClose [set next-task [ -> adult-gangster-hide]] [ ; police is in line of sight hide
+       set next-task [-> adult-gangster-work]
      ]
      
    
@@ -133,25 +137,32 @@ end
 ; tell child-gangsters to deliver orders
 ; recruit adults to join gang
 to adult-gangster-work
-  ifelse stoppedByAdult = "true" [set next-task [-> drug-order]][ ; when gangster is stopped, adult changes variables in gangster
-    ifelse [pcolor] of patch-ahead 0.25 = gray
-    [lt random-float 180]
-    [right random 30  left random 30  forward 0.25 ]                             ; right now they only walk around, but they do not walk in the prison
+ 
+ 
+  set isWorking? true
+  
+  ifelse empty? drugOrders = false [set next-task [-> drug-order]] [ 
+    set next-task [ -> adult-gangster-idle]
+
   ]
-   set next-task [ -> adult-gangster-idle]
+ 
 end
 
 to drug-order
-  ; either walk to nearest hideout or just find gangster-child somewhere, the child does the rest of the work
+ 
+ 
   let childGangsterClose child-gangsters in-radius 2
-  if any? childGangsterClose [set next-task [-> give-delivery-instructions]]
+  if any? childGangsterClose [    
+    set next-task [-> give-delivery-instructions first drugOrders]  
+  ]  
+  ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
+  show drugOrders
+  set size 2
+  set stoppedByAdult "false"                          
   
-  set stoppedByAdult "false"                          ;should be set by adult after communication is complete
-  
-  set next-task [-> adult-gangster-work]
 end
 
-to give-delivery-instructions
+to give-delivery-instructions [customer]
   ask child-gangsters in-radius 2 [ 
     ; vet ej om jag måste fråga om de är i radius 2 igen, men kanske sätter för alla annars, procedure kanske är onödig, sätter i drug order annars
     
