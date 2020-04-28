@@ -157,7 +157,6 @@ to confirm-delivery [place-to-pickup]
   ask first drugOrders[
     set pickUpPlace place-to-pickup
     set drugsDelivered? true
-    
   ]
   
 end
