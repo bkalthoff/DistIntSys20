@@ -38,7 +38,6 @@ to setup-adults
     set hasDrugs? false
     set stoppedByPolice 0
     set arrested-time -1
-    set pickUpPlace array:from-list n-values 2 [0]
     set orderedDrugs? false
     set inPrison? false
     set drugsDelivered? false
@@ -165,11 +164,25 @@ to adults-consuming-drugs
   
   [
     ;get the drugs
+
+    set next-task fetch-drugs pickUpPlace
+  ]
+
+end
+
+to fetch-drugs [destination]
+    ifelse distance destination > 1 [
+      face destination
+      forward 0.5
+  ]
+  [
     set hasDrugs? true
+    ask destination[
+      set drugs (drugs - 1)
+    ]
     set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
-
 end
 
 to adults-get-paid
@@ -188,6 +201,8 @@ to adults-move-turtle-pos [source destx desty]
   ]
 
 end
+
+
 
 to adults-stopped-by-police
   set state "stopped"

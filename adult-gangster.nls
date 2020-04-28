@@ -11,12 +11,14 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
-
+  
   gangMembers
   gang
 
+  pickup-place
   drugOrders
   isWorking?
+  drugsDelivered?
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -136,7 +138,7 @@ end
 ; take drug orders
 ; tell child-gangsters to deliver orders
 ; recruit adults to join gang
-to adult-gangster-work
+to adult-gangster-work 
  
  
   set isWorking? true
@@ -146,6 +148,18 @@ to adult-gangster-work
 
   ]
  
+  if drugsDelivered? = true [
+    set next-task [ -> confirm-delivery pickup-place]
+  ]
+end
+
+to confirm-delivery [place-to-pickup]
+  ask first drugOrders[
+    set pickUpPlace place-to-pickup
+    set drugsDelivered? true
+    
+  ]
+  
 end
 
 to drug-order
@@ -168,9 +182,33 @@ to give-delivery-instructions [customer]
     
     ; get drugs at hideout
     ; set drug-drop-location;insert drop off location for drugs
+    ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;  
+    ;                                               ;
+    ; /     \             \            /    \       ;
+    ;|       |             \          |      |      ;
+    ;|       `.             |         |       :     ;
+    ;`        |             |        \|       |     ;
+    ; \       | /       /  \\\   ____ \\       :    ;
+    ;  \      \/   ___~~          ~____| \     |    ;
+    ;   \      \__~                    ~__\    |    ;
+    ;    \_     \        _.______  .______\|   |    ;
+    ;      \     \______// _ ___ _ (_(__>  \   |    ;
+    ;       \   .  C ___)  ______ (_(____>  |  /    ;
+    ;       /\ |   C ____)/ Erik \ (_____>  |_/     ;
+    ;      / /\|   C_____)  Gavin|  (___>   /  \    ;
+    ;     |   (   _C_____)\______/  // _/ /     \   ;
+    ;     |    \  |__   \\_________// (__/       |  ;
+    ;    | \    \____)   `____  ___'             |  ;
+    ;    |  \_          ___\       /_          _/ | ;
+    ;   |              /    |     |  \            | ;
+    ;   |             |    /       \  \           | ;
+    ;   |          / /    |         |  \           |;
+    ;   |         / /      \__/\___/    |          |;
+    ;  |           /        |    |       |         |;
+    ;  |          |         |    |       |         |;
+    ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
   ]
 end
-
 
 
 
