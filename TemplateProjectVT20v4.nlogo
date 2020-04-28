@@ -100,10 +100,14 @@ to setup
 end
 
 to setup-territories ; create living-areas
-  create-patch upperclass 11 11 5 blue
-  create-patch middleclass -11 11 5 red
-  create-patch lowerclass 11 -11 5 brown
-  create-patch prison -11 -11 5 gray
+  set lowerclass patches with [pxcor >= -16 and pxcor < -4 and pycor > 4 and pycor <= 16]
+  ask lowerclass [ set pcolor brown ]
+  set middleclass patches with [pxcor > 4 and pxcor <= 16 and pycor > 4 and pycor <= 16]
+  ask middleclass [ set pcolor red ]
+  set upperclass patches with [pxcor > 4 and pxcor <= 16 and pycor < -4 and pycor >= -16]
+  ask upperclass [ set pcolor blue ]
+  set prison patches with [pxcor >= -16 and pxcor < -4 and pycor < -4 and pycor >= -16]
+  ask prison [ set pcolor grey ]
 end
 
 to setup-gangster-homes

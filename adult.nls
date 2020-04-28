@@ -35,7 +35,7 @@ to setup-adults
     set homeArea 1 + random 3
     adults-moving homeArea
     
-    set hasDrugs? false
+    set hasDrugs? False
     set stoppedByPolice 0
     set arrested-time -1
     set orderedDrugs? false
@@ -219,8 +219,8 @@ to adults-stopped-by-police
 end
 
 to adults-go-to-jail
-  ifelse distancexy -11 -11 > 1 [
-    set heading towardsxy-nowrap  -11 -11
+  ifelse distance min-one-of (prison) [distance myself]> 1 [
+    set heading towards-nowrap one-of prison with [count turtles-here = 0]
     forward 0.5
   ]
   

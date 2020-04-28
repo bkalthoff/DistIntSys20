@@ -75,10 +75,9 @@ to search-person
     set search-tick 0
   ]
 end
-
 to police-go-to-jail
-  ifelse distancexy -11 -11 > 1 [
-    set heading towardsxy-nowrap  -11 -11
+  ifelse distance min-one-of (prison) [distance myself]> 1 [
+    set heading towards-nowrap one-of prison with [count turtles-here = 0]
           forward 0.5
   ]
   [
