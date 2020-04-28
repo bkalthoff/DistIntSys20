@@ -163,9 +163,11 @@ to adults-consuming-drugs
   
   
   [
-    ;get the drugs
 
-    set next-task fetch-drugs pickUpPlace
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;remove this once the children have been implemented
+    ;set next-task[-> fetch-drugs pickUpPlace]
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ]
 
 end
