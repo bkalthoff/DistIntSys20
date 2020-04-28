@@ -26,14 +26,13 @@ child-gangsters-own [
 to setup-agent-child-gangster
   set-default-shape child-gangsters "person"
   create-ordered-child-gangsters 3 [ ; number-of-child-gangsters changed to integer
-    ;let greyPatch one-of patches with [ pcolor = grey ]
-    ;setxy [ pxcor ] of greyPatch [ pycor ] of greyPatch
-   ; set homeAdress one-of houses
-    ;setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
+  
+   set homeAdress one-of houses
+   setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
   ;  set schoolAdress min-one-of schools [ distance myself ]
     ;set birthDay 1 + random 9
     ;set age 5 + random 5
-    set color red
+    set color yellow
     set status 10 + random 5
    ; set label age
     set recruits 0
@@ -41,7 +40,7 @@ to setup-agent-child-gangster
     set carriesDrug? false
     set slinging? false
     set hidden? true
-    set leavingOffset who * 3
+    ;set leavingOffset who * 3
     set speed 1
     ;set speed ((random 3) + 2) / distance schoolAdress
     set next-task [ -> child-gangster-at-home ]
@@ -49,63 +48,71 @@ to setup-agent-child-gangster
 end
 
 to child-gangster-walk-around
+  right random 45
+  left random 45 
+  forward 0.25
   
-  set heading random 360
-  let nextPatch patch-ahead 3
-  let currentPatch patch-here
   
-  ifelse ([pcolor] of currentPatch != grey)[
-    face one-of patches with [pcolor = grey]
-    forward speed
-  ][
-    
   
-  if (nextPatch != nobody)[
-      ifelse ([pcolor] of patch-ahead 3 = yellow or [pcolor] of patch-ahead 3 = green)[
-    back speed
-  ] [
-    forward speed
-    ]
-  ]
-    
+;  set heading random 360
+;  let nextPatch patch-ahead 3
+;  let currentPatch patch-here
+;  
+;  ifelse ([pcolor] of currentPatch != grey)[
+;    face one-of patches with [pcolor = grey]
+;    forward speed
+;  ][
+;    
+;  
+;  if (nextPatch != nobody)[
+;      ifelse ([pcolor] of patch-ahead 3 = yellow or [pcolor] of patch-ahead 3 = green)[
+;    back speed
+;  ] [
+;    forward speed
+;    ]
+;  ]
+;  
 
-  let temp-child-gangster self
-  let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
-
-
-  ifelse(temp-child-to-recruit != nobody)[
-      ask temp-child-to-recruit[
-
-    set recruiter temp-child-gangster
-    set recruitAttempt? true
-
-
-    set-next-task[-> child-turn-to-child-gangster]
-
-    ask temp-child-gangster [
-      set child-to-recruit temp-child-to-recruit
-      set next-task [-> child-gangster-recruit-attempt]
-    ]
-
-
-    ]
-  ] [
-      
-  
-      ifelse (slinging? = true)[
-    
-        set next-task [-> child-gangster-go-to-stash-house]
-
-  ] [
-        
-        if (time + leavingOffset > 2300 or time + leavingOffset < 400)[      
-          set next-task [-> child-gangster-go-home]      
-        ]
-      ]  
-    ]
-    
-
-  ] 
+;  
+;    
+;
+;  let temp-child-gangster self
+;  let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
+;
+;
+;  ifelse(temp-child-to-recruit != nobody)[
+;      ask temp-child-to-recruit[
+;
+;    set recruiter temp-child-gangster
+;    set recruitAttempt? true
+;
+;
+;    set-next-task[-> child-turn-to-child-gangster]
+;
+;    ask temp-child-gangster [
+;      set child-to-recruit temp-child-to-recruit
+;      set next-task [-> child-gangster-recruit-attempt]
+;    ]
+;
+;
+;    ]
+;  ] [
+;      
+;  
+;      ifelse (slinging? = true)[
+;    
+;        set next-task [-> child-gangster-go-to-stash-house]
+;
+;  ] [
+;        
+;        if (time + leavingOffset > 2300 or time + leavingOffset < 400)[      
+;          set next-task [-> child-gangster-go-home]      
+;        ]
+;      ]  
+;    ]
+;    
+;
+;  ] 
 end
 
 to set-next-task [next]
@@ -118,17 +125,17 @@ end
 
 to child-gangster-at-home
   
-  if (time + leavingOffset = 1900)[
+  if (time + leavingOffset = 150)[
    set hidden? false
    
    set next-task[-> child-gangster-walk-around]
   ]
 
-  if (time + leavingOffset = 900)[
-    set hidden? false
-    set skipAttempt? false
-    set next-task[-> child-gangster-go-to-school]
-  ]
+;  if (time + leavingOffset = 900)[
+;    set hidden? false
+;    set skipAttempt? false
+;    set next-task[-> child-gangster-go-to-school]
+;  ]
   
 end
 

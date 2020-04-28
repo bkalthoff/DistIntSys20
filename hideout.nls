@@ -1,0 +1,52 @@
+hideouts-own [
+  weapons
+  drugs
+  next-task
+]
+
+to setup-hideouts
+  
+
+    let Q number-of-hideouts
+
+    
+  ask n-of Q patches with [pcolor = brown][
+    sprout-hideouts 1 [ 
+      set shape "house" 
+      set color grey 
+      set size 1 
+      set next-task [ -> be-hideout]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = red][
+    sprout-hideouts 1 [ 
+      set shape "house" 
+      set color grey
+      set size 1 
+      set next-task [ -> be-hideout]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = blue][
+    sprout-hideouts 1 [ 
+      set shape "house" 
+      set color grey
+      set size 1 
+      set next-task [ -> be-hideout]
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-hideout
+  
+end

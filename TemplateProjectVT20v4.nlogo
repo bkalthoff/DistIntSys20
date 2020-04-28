@@ -8,12 +8,38 @@
 ;
 ;
 ;
-__includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls" "adult-gangster-lists.nls"]
+__includes [
+  "adult-gangster.nls"
+  "police.nls"
+  "child-gangster.nls"
+  "child.nls"
+  "adult.nls"
+  "adult-gangster-lists.nls"
+  "house.nls"
+  "hideout.nls"
+  "stash-house.nls"
+]
 
 
 extensions [
 vid
 array ] ; used for recording simulation
+
+; ************ BREEDS OF TURTLES *****************
+breed [ persons person ]  ;
+breed [ adults adult ]
+breed [ adult-gangsters adult-gangster]
+
+breed [gangster-homes gangster-home]
+breed [ police a-police ]
+breed [ children child ]
+breed [ houses house ]
+breed [ schools school ]
+breed [ stash-houses stash-house]
+breed [hideouts hideout]
+
+
+; ********************end breed of turtles ********
 
 ; ************* GLOBAL VARIABLES *****************
 globals [
@@ -27,20 +53,7 @@ time
 
 ; ******************end global variables ***********
 
-; ************ BREEDS OF TURTLES *****************
-breed [ persons person ]  ;
-breed [ adults adult ]
-breed [ adult-gangsters adult-gangster]
-breed [hidingplaces hideout]
-breed [gangster-homes gangster-home]
-breed [ police a-police ]
-breed [ children child ]
-breed [ houses house ]
-breed [ schools school ]
-breed [ stash-houses stash-house]
 
-
-; ********************end breed of turtles ********
 
 ; ************* AGENT-SPECIFIC VARIABLES *********
 turtles-own[
@@ -51,11 +64,11 @@ gangster-homes-own[
   next-task
 ]
 
-hidingplaces-own [
-  weapons
-  drugs
-  next-task
-]
+;hidingplaces-own [
+;  weapons
+;  drugs
+;  next-task
+;]
 
 
 
@@ -68,15 +81,16 @@ to setup
   clear-all
  setup-territories ; create living-areas
   ; setup-persons; create people, assign them into a hometerritory
- setup-hidingplaces
+  setup-hideouts
+  setup-houses
+  setup-stash-houses
+
+
   setup-police
   setup-adult-Gangster
-
-;setup-childGangster
   setup-gangster-homes
-setup-agent-child-gangster
-setup-agent-child
-  ; setup-child
+  setup-agent-child-gangster
+  setup-child
   setup-adults
   ;
   reset-ticks
@@ -132,6 +146,10 @@ ask turtles[
   ; what child is doing
   ; what adult is doing
   ;
+  set time time + 1
+  if (time = 800)[
+   set time 0
+  ]
   tick
   if vid:recorder-status = "recording" [ vid:record-view ]
 end
@@ -209,7 +227,6 @@ to save-recording
     user-message error-message
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -404,6 +421,51 @@ number-of-adult
 0
 30
 10.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+18
+315
+190
+348
+number-of-stash-houses
+number-of-stash-houses
+1
+5
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+14
+360
+186
+393
+number-of-houses
+number-of-houses
+1
+5
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+13
+406
+185
+439
+number-of-hideouts
+number-of-hideouts
+1
+5
+4.0
 1
 1
 NIL

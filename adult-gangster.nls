@@ -35,7 +35,7 @@ to setup-adult-Gangster
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
-    set gangster-hideout hideout random 2
+    set gangster-hideout min-one-of hideouts [distance myself]
     ifelse gang = red
     [setupGangmembers red]
     [setupGangmembers blue]
@@ -51,17 +51,17 @@ end
 
 
 
-to setup-hidingplaces
-  
-  create-hidingplaces 2 [ 
-    set shape "house"
-    set color green
-    set size 2
-    setxy random-xcor random-ycor
-    set next-task ""
-  ]
-
-end
+;to setup-hidingplaces
+;  
+;  create-hidingplaces 2 [ 
+;    set shape "house"
+;    set color green
+;    set size 2
+;    setxy random-xcor random-ycor
+;    set next-task ""
+;  ]
+;
+;end
 
 
 
@@ -120,13 +120,13 @@ to adult-gangster-hide
  ; lt 180                                                                      ; turn 180 degrees and walk that way
  ; set hidden? true                                     ; for demo purpose
 
-    set heading towards gangster-hideout
-    forward 0.25
-    ifelse ticks mod 50 = 0 and distance gangster-hideout < 0.1 [
-     set next-task [ -> adult-gangster-idle] 
-    ][           
-     set next-task [ -> adult-gangster-hide]
-    ]
+  face gangster-hideout
+  forward 0.25
+  ifelse ticks mod 50 = 0 and distance gangster-hideout < 0.3 [
+    set next-task [ -> adult-gangster-idle] 
+  ][           
+    set next-task [ -> adult-gangster-hide]
+  ]
   
 end
 
@@ -156,8 +156,8 @@ to drug-order
     set next-task [-> give-delivery-instructions first drugOrders]  
   ]  
   ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
-  show drugOrders
-  set size 2
+  ;show drugOrders
+  set size 1
   set stoppedByAdult "false"                          
   
 end

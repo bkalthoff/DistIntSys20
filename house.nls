@@ -1,0 +1,50 @@
+houses-own [
+  next-task
+]
+
+to setup-houses
+  
+
+  let Q 2
+
+    
+  ask n-of Q patches with [pcolor = brown][
+    sprout-houses 1 [ 
+      set shape "house" 
+      set color green
+      set size 1 
+      set next-task [ -> be-house]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = red][
+    sprout-houses 1 [ 
+      set shape "house" 
+      set color green
+      set size 1 
+      set next-task [ -> be-house]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = blue][
+    sprout-houses 1 [ 
+      set shape "house" 
+      set color green
+      set size 1 
+      set next-task [ -> be-house]
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-house
+  
+end

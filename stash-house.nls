@@ -1,0 +1,49 @@
+stash-houses-own [
+  next-task
+]
+
+to setup-stash-houses
+  
+
+  let Q number-of-stash-houses
+    
+  ask n-of Q patches with [pcolor = brown][
+    sprout-stash-houses 1 [ 
+      set shape "house" 
+      set color yellow 
+      set size 1 
+      set next-task [ -> be-stash-house]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = red][
+    sprout-stash-houses 1 [ 
+      set shape "house" 
+      set color yellow 
+      set size 1 
+      set next-task [ -> be-stash-house]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = blue][
+    sprout-stash-houses 1 [ 
+      set shape "house" 
+      set color yellow 
+      set size 1 
+      set next-task [ -> be-stash-house]
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-stash-house
+  
+end

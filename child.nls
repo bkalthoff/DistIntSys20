@@ -2,6 +2,7 @@
 
 children-own [
   next-task
+  homeAdress
   schoolAdress
   childGangstersMet
   leavingOffset
@@ -16,20 +17,20 @@ children-own [
 
 
 
-to setup-agent-child
+to setup-child
   set-default-shape children "person"
   create-children number-of-children [
-   ; set homeAdress one-of houses
+    set homeAdress one-of houses
    
-   ; setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
-  ;  set schoolAdress min-one-of schools [ distance myself ]
-   ; set birthDay 1 + random 9
-  ;  set age 5 + random 5
+    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
+    ;  set schoolAdress min-one-of schools [ distance myself ]
+    ; set birthDay 1 + random 9
+    ;  set age 5 + random 5
     set childGangstersMet 0
     set color white
     set hidden? true
     set recruitAttempt? false
-    set leavingOffset who * 3
+    ;set leavingOffset who * 3
    set speed 1
     ; set speed ((random 3) + 2) / distance schoolAdress
     set tickStandStill 0
@@ -85,25 +86,28 @@ to child-go-home
 end
 
 to child-out-playing
- face one-of patches with [pcolor = grey]
- forward random 3 / 10
 
- if (time + leavingOffset > 2300 or time + leavingOffset < 400)[
-    set next-task [-> child-go-home]
-  ]
+  right random 45
+  left random 45 
+  forward 0.25
+
+
+; if (time + leavingOffset > 2300 or time + leavingOffset < 400)[
+;    set next-task [-> child-go-home]
+;  ]
 end
 
 to child-at-home
 
-  if (time + leavingOffset = 1900)[
+  if (time + leavingOffset = 200)[
    set hidden? false
    set recruitAttempt? false
    set next-task[-> child-out-playing]
   ]
 
-  if (time + leavingOffset = 900)[
-    set hidden? false
-    set recruitAttempt? false
-    set next-task[-> child-go-to-school]
-  ]
+;  if (time + leavingOffset = 200)[
+;    set hidden? false
+;    set recruitAttempt? false
+;    set next-task[-> child-go-to-school]
+;  ]
 end
