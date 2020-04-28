@@ -16,6 +16,8 @@ to setup-hideouts
       set color grey 
       set size 1 
       set next-task [ -> be-hideout]
+      set weapons 1
+      set drugs 1
     ]
     
   ]
@@ -25,6 +27,8 @@ to setup-hideouts
       set shape "house" 
       set color grey
       set size 1 
+      set weapons 1
+      set drugs 1
       set next-task [ -> be-hideout]
     ]
     
@@ -35,6 +39,8 @@ to setup-hideouts
       set shape "house" 
       set color grey
       set size 1 
+      set weapons 1
+      set drugs 1
       set next-task [ -> be-hideout]
     ]
     

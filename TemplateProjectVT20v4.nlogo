@@ -235,13 +235,13 @@ to save-recording
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-647
-448
+530
+32
+1255
+758
 -1
 -1
-13.0
+21.73
 1
 10
 1
@@ -366,7 +366,7 @@ number-of-children
 number-of-children
 0
 40
-5.0
+2.0
 1
 1
 NIL
@@ -396,7 +396,7 @@ number-of-police
 number-of-police
 1
 50
-10.0
+3.0
 1
 1
 NIL
@@ -441,7 +441,7 @@ number-of-houses
 number-of-houses
 1
 5
-2.0
+1.0
 1
 1
 NIL
@@ -456,7 +456,7 @@ number-of-hideouts
 number-of-hideouts
 1
 5
-1.0
+5.0
 1
 1
 NIL
@@ -486,7 +486,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 1
 20
-5.0
+1.0
 1
 1
 NIL

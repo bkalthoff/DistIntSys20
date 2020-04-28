@@ -1,5 +1,7 @@
 stash-houses-own [
   next-task
+  weapons
+  drugs
 ]
 
 to setup-stash-houses
@@ -12,6 +14,8 @@ to setup-stash-houses
       set shape "house" 
       set color yellow 
       set size 1 
+      set weapons 1
+      set drugs 1
       set next-task [ -> be-stash-house]
     ]
     
@@ -23,6 +27,8 @@ to setup-stash-houses
       set color yellow 
       set size 1 
       set next-task [ -> be-stash-house]
+      set weapons 1
+      set drugs 1
     ]
     
   ]
@@ -33,6 +39,8 @@ to setup-stash-houses
       set color yellow 
       set size 1 
       set next-task [ -> be-stash-house]
+      set weapons 1
+      set drugs 1
     ]
     
   ]

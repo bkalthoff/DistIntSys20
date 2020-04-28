@@ -4,6 +4,8 @@ police-own [
   person-to-search
   search-tick
   someoneAskedForHelp
+  ImOccupied
+  RespondingOnHelp
 ]
 
 to setup-police
@@ -50,12 +52,13 @@ to move-police
     ]
   ]
   
-  ;if [is-hiding-place] of patch-here = true [
-  ;    set next-task [ -> search-place ]
-
+    if any? (hideouts-here with [drugs > 0 or weapons > 0]) or any?(stash-houses-here with [drugs > 0 or weapons > 0])[
+      set next-task [ -> ask-for-help ]
+  ]
 end
 
 to search-person
+  set ImOccupied 1
   set search-tick search-tick + 1
   if search-tick = 10[
     ask person-to-search [
@@ -71,7 +74,8 @@ to search-person
     ifelse [ arrested-time ] of person-to-search != -1 [
       set next-task [ -> police-go-to-jail ]
     ]
-    [ set next-task [ -> move-police ] ]
+    [ set ImOccupied 0
+      set next-task [ -> move-police ] ]
     set search-tick 0
   ]
 end
@@ -81,6 +85,50 @@ to police-go-to-jail
           forward 0.5
   ]
   [
+    set ImOccupied 0
     set next-task [ -> move-police]
   ]
+end
+
+to ask-for-help  
+  let IAskedForHelp self
+  set ImOccupied 1
+  set someoneAskedForHelp 1
+  ifelse any? other police with [ImOccupied = 0] [
+    set RespondingOnHelp min-one-of (other police with [ImOccupied = 0]) [distance myself]
+ 
+  ask RespondingOnHelp [ 
+    set heading towards-nowrap IAskedForHelp
+    if distance min-one-of (other police) [distance myself] > 2 [
+    fd 1
+    ]
+  ]
+  ask IAskedForHelp [
+    if any? (police-on neighbors) [
+      set next-task [-> search-place]
+    ]
+  ]
+]
+  [    set next-task [-> ask-for-help]
+  ]
+end
+
+to search-place
+  ifelse any? hideouts-here[ 
+  let hideout-to-search hideouts-here
+  ask hideout-to-search [
+    set weapons 0
+    set drugs 0
+    set color orange 
+    ]
+  ][
+    let stash-houses-to-search stash-houses-here
+    ask stash-houses-to-search [
+        set weapons 0
+        set drugs 0
+        set color pink
+    ]
+  ]
+  set ImOccupied 0
+      set next-task [-> move-police]
 end
