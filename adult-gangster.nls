@@ -29,6 +29,7 @@ to setup-adult-Gangster
   
   [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
   ask n-of Q patches with [pcolor = blue]
+    [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
  
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
