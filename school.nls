@@ -1,0 +1,50 @@
+schools-own [
+  next-task
+]
+
+to setup-schools
+  
+
+    let Q number-of-schools
+
+    
+  ask n-of Q patches with [pcolor = brown][
+    sprout-schools 1 [ 
+      set shape "building store" 
+      set color white
+      set size 1 
+      set next-task [ -> be-school]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = red][
+    sprout-schools 1 [ 
+      set shape "building store" 
+      set color white
+      set size 1 
+      set next-task [ -> be-school]
+    ]
+    
+  ]
+  
+    ask n-of Q patches with [pcolor = blue][
+    sprout-schools 1 [ 
+       set shape "building store" 
+      set color white
+      set size 1 
+      set next-task [ -> be-school]
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-school
+  
+end

@@ -18,6 +18,7 @@ __includes [
   "house.nls"
   "hideout.nls"
   "stash-house.nls"
+  "school.nls"
 ]
 
 
@@ -84,6 +85,7 @@ to setup
   setup-hideouts
   setup-houses
   setup-stash-houses
+  setup-schools
 
 
   setup-police
@@ -360,7 +362,7 @@ number-of-children
 number-of-children
 0
 40
-15.0
+5.0
 1
 1
 NIL
@@ -375,7 +377,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-10.0
+5.0
 1
 1
 NIL
@@ -386,26 +388,11 @@ SLIDER
 173
 185
 206
-number-of-polices
-number-of-polices
-0
-40
+number-of-police
+number-of-police
+1
+50
 10.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-17
-224
-189
-257
-number-of-child
-number-of-child
-0
-40
-20.0
 1
 1
 NIL
@@ -420,21 +407,6 @@ number-of-adult
 number-of-adult
 0
 30
-10.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-18
-315
-190
-348
-number-of-stash-houses
-number-of-stash-houses
-1
-5
 5.0
 1
 1
@@ -442,30 +414,75 @@ NIL
 HORIZONTAL
 
 SLIDER
-14
-360
-186
-393
-number-of-houses
-number-of-houses
+12
+396
+184
+429
+number-of-stash-houses
+number-of-stash-houses
 1
 5
-5.0
+1.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-13
-406
-185
-439
+11
+440
+183
+473
+number-of-houses
+number-of-houses
+1
+5
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+12
+485
+184
+518
 number-of-hideouts
 number-of-hideouts
 1
 5
-4.0
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+353
+189
+386
+number-of-schools
+number-of-schools
+1
+5
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+309
+206
+342
+number-of-child-gangsters
+number-of-child-gangsters
+1
+20
+5.0
 1
 1
 NIL
@@ -541,6 +558,21 @@ Circle -7500403 true true 110 127 80
 Circle -7500403 true true 110 75 80
 Line -7500403 true 150 100 80 30
 Line -7500403 true 150 100 220 30
+
+building store
+false
+0
+Rectangle -7500403 true true 30 45 45 240
+Rectangle -16777216 false false 30 45 45 165
+Rectangle -7500403 true true 15 165 285 255
+Rectangle -16777216 true false 120 195 180 255
+Line -7500403 true 150 195 150 255
+Rectangle -16777216 true false 30 180 105 240
+Rectangle -16777216 true false 195 180 270 240
+Line -16777216 false 0 165 300 165
+Polygon -7500403 true true 0 165 45 135 60 90 240 90 255 135 300 165
+Rectangle -7500403 true true 0 0 75 45
+Rectangle -16777216 false false 0 0 75 45
 
 butterfly
 true
