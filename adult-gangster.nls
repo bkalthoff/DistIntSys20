@@ -24,13 +24,13 @@ adult-gangsters-own [
 to setup-adult-Gangster
   
   let Q number-of-adultGangster 
-  ask n-of Q patches with [pcolor = brown]
+  ask n-of Q lowerclass
   [sprout-adult-gangsters 1 [ set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2] set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
   
-  ask n-of Q patches with [pcolor = red]
+  ask n-of Q middleclass
   
   [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
-  ask n-of Q patches with [pcolor = blue]
+  ask n-of Q upperclass
     [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
  
   ask adult-gangsters [ 

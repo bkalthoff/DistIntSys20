@@ -7,7 +7,7 @@ to setup-stash-houses
 
   let Q number-of-stash-houses
     
-  ask n-of Q patches with [pcolor = brown][
+  ask n-of Q lowerclass[
     sprout-stash-houses 1 [ 
       set shape "house" 
       set color yellow 
@@ -17,7 +17,7 @@ to setup-stash-houses
     
   ]
   
-    ask n-of Q patches with [pcolor = red][
+    ask n-of Q middleclass[
     sprout-stash-houses 1 [ 
       set shape "house" 
       set color yellow 
@@ -27,7 +27,7 @@ to setup-stash-houses
     
   ]
   
-    ask n-of Q patches with [pcolor = blue][
+    ask n-of Q upperclass[
     sprout-stash-houses 1 [ 
       set shape "house" 
       set color yellow 

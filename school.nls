@@ -8,7 +8,7 @@ to setup-schools
     let Q number-of-schools
 
     
-  ask n-of Q patches with [pcolor = brown][
+  ask n-of Q lowerclass[
     sprout-schools 1 [ 
       set shape "building store" 
       set color white
@@ -18,7 +18,7 @@ to setup-schools
     
   ]
   
-    ask n-of Q patches with [pcolor = red][
+    ask n-of Q middleclass[
     sprout-schools 1 [ 
       set shape "building store" 
       set color white
@@ -28,7 +28,7 @@ to setup-schools
     
   ]
   
-    ask n-of Q patches with [pcolor = blue][
+    ask n-of Q upperclass[
     sprout-schools 1 [ 
        set shape "building store" 
       set color white

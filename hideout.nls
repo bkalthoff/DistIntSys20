@@ -10,7 +10,7 @@ to setup-hideouts
     let Q number-of-hideouts
 
     
-  ask n-of Q patches with [pcolor = brown][
+  ask n-of Q lowerclass[
     sprout-hideouts 1 [ 
       set shape "house" 
       set color grey 
@@ -20,7 +20,7 @@ to setup-hideouts
     
   ]
   
-    ask n-of Q patches with [pcolor = red][
+    ask n-of Q middleclass[
     sprout-hideouts 1 [ 
       set shape "house" 
       set color grey
@@ -30,7 +30,7 @@ to setup-hideouts
     
   ]
   
-    ask n-of Q patches with [pcolor = blue][
+    ask n-of Q upperclass[
     sprout-hideouts 1 [ 
       set shape "house" 
       set color grey
