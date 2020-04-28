@@ -5,7 +5,7 @@ houses-own [
 to setup-houses
   
 
-  let Q 2
+  let Q number-of-houses
 
     
   ask n-of Q patches with [pcolor = brown][
