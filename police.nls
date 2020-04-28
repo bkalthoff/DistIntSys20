@@ -8,7 +8,7 @@ police-own [
 
 to setup-police
   
-  create-police 3
+  create-police number-of-police
   [
     set shape  "person police"
     set color blue
@@ -35,7 +35,7 @@ to move-police
   ]
   forward 0.5
   
-  if any? (adults-here with [ stoppedByPolice = 0 and state != "work" ]) [
+  ifelse any? (adults-here with [ stoppedByPolice = 0 and state != "work" ]) [
     let target one-of adults-here
     ask target [
       set stoppedByPolice 1
@@ -44,6 +44,10 @@ to move-police
     ]
     set person-to-search target
     set next-task [ -> search-person ]
+  ][
+    if any? child-gangsters-here with [followedByPolice? = false][
+      
+    ]
   ]
   
   ;if [is-hiding-place] of patch-here = true [

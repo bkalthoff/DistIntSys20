@@ -11,21 +11,23 @@ child-gangsters-own [
   recruits
   child-to-recruit
   adult-gangster-drugs
-  tickStandStill
-  skipAttempt?
-  carriesDrug?
-  slinging? 
+  tickStandStill  
   speed
   leavingOffset
   directionOffset
   randomGreyPatch
   stoppedByPolice
+  
+  followedByPolice?
+  skipAttempt?
+  carriesDrug?
+  slinging? 
 ]
 
 
 to setup-agent-child-gangster
   set-default-shape child-gangsters "person"
-  create-ordered-child-gangsters 3 [ ; number-of-child-gangsters changed to integer
+  create-ordered-child-gangsters number-of-child-gangsters [ ; number-of-child-gangsters changed to integer
   
    set homeAdress one-of houses
    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
@@ -39,6 +41,7 @@ to setup-agent-child-gangster
     set skipAttempt? false
     set carriesDrug? false
     set slinging? false
+    set followedByPolice? false
     set hidden? true
     ;set leavingOffset who * 3
     set speed 1
