@@ -21,35 +21,35 @@ to setup-child
   set-default-shape children "person"
   create-children number-of-children [
     set homeAdress one-of houses
-   
+    
     setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
-    ;  set schoolAdress min-one-of schools [ distance myself ]
+    set schoolAdress min-one-of schools [ distance myself ]
     ; set birthDay 1 + random 9
     ;  set age 5 + random 5
     set childGangstersMet 0
     set color white
     set hidden? true
     set recruitAttempt? false
-    ;set leavingOffset who * 3
-   set speed 1
-    ; set speed ((random 3) + 2) / distance schoolAdress
+    set leavingOffset random 25
+    set speed 0.25
     set tickStandStill 0
     set next-task [ -> child-at-home ]
     
   ]
 end
 
-to child-turn-to-child-gangster
-  face recruiter
+to child-at-home
   
-  ifelse(distance recruiter > 1)[
-     forward 0.1
-  ][
-    set tickStandStill tickStandStill + 1
-    if (tickStandStill = 50)[
-      set tickStandStill 0
-      set next-task previous-task
-    ]
+  if (time + leavingOffset = 800)[
+    set hidden? false
+    set recruitAttempt? false
+    set next-task[-> child-out-playing]
+  ]
+  
+  if (time + leavingOffset = 200)[
+    set hidden? false
+    set recruitAttempt? false
+    set next-task[-> child-go-to-school]
   ]
 end
 
@@ -58,15 +58,16 @@ to child-go-to-school
   set directionOffset random 100 + random -100
   set heading heading + directionOffset
   forward speed
-
+  
   if (distance schoolAdress < speed)[
     set hidden? true
     set next-task[-> child-in-school]
   ]
 end
 
+
 to child-in-school
-  if (time + leavingOffset = 1600)[
+  if (time + leavingOffset = 600)[
     set hidden? false
     set recruitAttempt? false
     set next-task[-> child-go-home]
@@ -78,7 +79,7 @@ to child-go-home
   set directionOffset random 100 + random -100
   set heading heading + directionOffset
   forward speed
-
+  
   if (distance homeAdress < speed)[
     set hidden? true
     set next-task[-> child-at-home]
@@ -86,28 +87,37 @@ to child-go-home
 end
 
 to child-out-playing
-
-  right random 45
-  left random 45 
+  
+  set directionOffset random 100 + random -100
+  set heading heading + directionOffset
   forward 0.25
-
-
-; if (time + leavingOffset > 2300 or time + leavingOffset < 400)[
-;    set next-task [-> child-go-home]
-;  ]
-end
-
-to child-at-home
-
-  if (time + leavingOffset = 200)[
-   set hidden? false
-   set recruitAttempt? false
-   set next-task[-> child-out-playing]
+  
+  
+  if (time + leavingOffset > 1000 or time + leavingOffset < 200)[
+    set next-task [-> child-go-home]
   ]
-
-;  if (time + leavingOffset = 200)[
-;    set hidden? false
-;    set recruitAttempt? false
-;    set next-task[-> child-go-to-school]
-;  ]
 end
+
+
+to child-turn-to-child-gangster
+  face recruiter
+  
+  ifelse(distance recruiter > 1)[
+    forward 0.1
+  ][
+    set tickStandStill tickStandStill + 1
+    if (tickStandStill = 50)[
+      set tickStandStill 0
+      set next-task previous-task
+    ]
+  ]
+end
+
+
+
+
+
+
+
+
+

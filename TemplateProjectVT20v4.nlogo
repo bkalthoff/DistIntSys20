@@ -153,7 +153,7 @@ ask turtles[
   ; what adult is doing
   ;
   set time time + 1
-  if (time = 800)[
+  if (time = 1200)[
    set time 0
   ]
   tick
@@ -366,7 +366,7 @@ number-of-children
 number-of-children
 0
 40
-2.0
+0.0
 1
 1
 NIL
@@ -381,7 +381,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-5.0
+1.0
 1
 1
 NIL
@@ -394,9 +394,9 @@ SLIDER
 206
 number-of-police
 number-of-police
-1
+0
 50
-3.0
+1.0
 1
 1
 NIL
@@ -411,7 +411,7 @@ number-of-adult
 number-of-adult
 0
 30
-5.0
+1.0
 1
 1
 NIL
@@ -441,7 +441,7 @@ number-of-houses
 number-of-houses
 1
 5
-1.0
+5.0
 1
 1
 NIL
@@ -456,7 +456,7 @@ number-of-hideouts
 number-of-hideouts
 1
 5
-5.0
+1.0
 1
 1
 NIL
@@ -484,9 +484,9 @@ SLIDER
 342
 number-of-child-gangsters
 number-of-child-gangsters
-1
+0
 20
-1.0
+20.0
 1
 1
 NIL

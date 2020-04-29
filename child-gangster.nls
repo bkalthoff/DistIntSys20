@@ -31,11 +31,11 @@ to setup-agent-child-gangster
   
    set homeAdress one-of houses
    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
-  ;  set schoolAdress min-one-of schools [ distance myself ]
+    set schoolAdress min-one-of schools [ distance myself ]
     ;set birthDay 1 + random 9
     ;set age 5 + random 5
     set color yellow
-    set status 10 + random 5
+    set status 10 + random 10
    ; set label age
     set recruits 0
     set skipAttempt? false
@@ -43,9 +43,8 @@ to setup-agent-child-gangster
     set slinging? false
     set followedByPolice? false
     set hidden? true
-    ;set leavingOffset who * 3
-    set speed 1
-    ;set speed ((random 3) + 2) / distance schoolAdress
+    set leavingOffset random 25
+    set speed 0.25
     set next-task [ -> child-gangster-at-home ]
   ]
 end
@@ -116,6 +115,12 @@ to child-gangster-walk-around
 ;    
 ;
 ;  ] 
+  
+    if (time + leavingOffset > 1000 or time + leavingOffset < 200)[
+    set next-task [-> child-gangster-go-home]
+  ]
+  
+  
 end
 
 to set-next-task [next]
@@ -128,17 +133,17 @@ end
 
 to child-gangster-at-home
   
-  if (time + leavingOffset = 150)[
+  if (time + leavingOffset = 800)[
    set hidden? false
    
    set next-task[-> child-gangster-walk-around]
   ]
 
-;  if (time + leavingOffset = 900)[
-;    set hidden? false
-;    set skipAttempt? false
-;    set next-task[-> child-gangster-go-to-school]
-;  ]
+  if (time + leavingOffset = 200)[
+    set hidden? false
+    set skipAttempt? false
+    set next-task[-> child-gangster-go-to-school]
+  ]
   
 end
 
@@ -156,21 +161,22 @@ to child-gangster-go-to-school
   
   let currentPatch patch-here
   
-  if ([pcolor] of currentPatch = grey and skipAttempt? = false)[        
+     
     let roll random 50
-    if(roll < status)[
+    ifelse(roll < status and skipAttempt? = false)[
       set next-task[-> child-gangster-walk-around]
-    ]
-    
-    set skipAttempt? true
-    
+    ][
+        set skipAttempt? true
   ]
+    
+
+
   
   
 end
 
 to child-gangster-in-school
-  if (time + leavingOffset = 1600)[
+  if (time + leavingOffset = 600)[
     set hidden? false
     set next-task[-> child-gangster-go-home]
   ]
