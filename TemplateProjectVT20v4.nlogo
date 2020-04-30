@@ -8,12 +8,39 @@
 ;
 ;
 ;
-__includes [  "adult-gangster.nls" "police.nls" "child-gangster.nls" "child.nls" "adult.nls" "adult-gangster-lists.nls"]
+__includes [
+  "adult-gangster.nls"
+  "police.nls"
+  "child-gangster.nls"
+  "child.nls"
+  "adult.nls"
+  "adult-gangster-lists.nls"
+  "house.nls"
+  "hideout.nls"
+  "stash-house.nls"
+  "school.nls"
+]
 
 
 extensions [
 vid
 array ] ; used for recording simulation
+
+; ************ BREEDS OF TURTLES *****************
+breed [ persons person ]  ;
+breed [ adults adult ]
+breed [ adult-gangsters adult-gangster]
+
+breed [gangster-homes gangster-home]
+breed [ police a-police ]
+breed [ children child ]
+breed [ houses house ]
+breed [ schools school ]
+breed [ stash-houses stash-house]
+breed [hideouts hideout]
+
+
+; ********************end breed of turtles ********
 
 ; ************* GLOBAL VARIABLES *****************
 globals [
@@ -27,20 +54,7 @@ time
 
 ; ******************end global variables ***********
 
-; ************ BREEDS OF TURTLES *****************
-breed [ persons person ]  ;
-breed [ adults adult ]
-breed [ adult-gangsters adult-gangster]
-breed [hidingplaces hideout]
-breed [gangster-homes gangster-home]
-breed [ police a-police ]
-breed [ children child ]
-breed [ houses house ]
-breed [ schools school ]
-breed [ stash-houses stash-house]
 
-
-; ********************end breed of turtles ********
 
 ; ************* AGENT-SPECIFIC VARIABLES *********
 turtles-own[
@@ -51,11 +65,11 @@ gangster-homes-own[
   next-task
 ]
 
-hidingplaces-own [
-  weapons
-  drugs
-  next-task
-]
+;hidingplaces-own [
+;  weapons
+;  drugs
+;  next-task
+;]
 
 
 
@@ -68,15 +82,17 @@ to setup
   clear-all
  setup-territories ; create living-areas
   ; setup-persons; create people, assign them into a hometerritory
- setup-hidingplaces
+  setup-hideouts
+  setup-houses
+  setup-stash-houses
+  setup-schools
+
+
   setup-police
   setup-adult-Gangster
-
-;setup-childGangster
   setup-gangster-homes
-setup-agent-child-gangster
-setup-agent-child
-  ; setup-child
+  setup-agent-child-gangster
+  setup-child
   setup-adults
   ;
   reset-ticks
@@ -84,10 +100,14 @@ setup-agent-child
 end
 
 to setup-territories ; create living-areas
-  create-patch upperclass 11 11 5 blue
-  create-patch middleclass -11 11 5 red
-  create-patch lowerclass 11 -11 5 brown
-  create-patch prison -11 -11 5 gray
+  set lowerclass patches with [pxcor >= -16 and pxcor < -4 and pycor > 4 and pycor <= 16]
+  ask lowerclass [ set pcolor brown ]
+  set middleclass patches with [pxcor > 4 and pxcor <= 16 and pycor > 4 and pycor <= 16]
+  ask middleclass [ set pcolor red ]
+  set upperclass patches with [pxcor > 4 and pxcor <= 16 and pycor < -4 and pycor >= -16]
+  ask upperclass [ set pcolor blue ]
+  set prison patches with [pxcor >= -16 and pxcor < -4 and pycor < -4 and pycor >= -16]
+  ask prison [ set pcolor grey ]
 end
 
 to setup-gangster-homes
@@ -132,6 +152,10 @@ ask turtles[
   ; what child is doing
   ; what adult is doing
   ;
+  set time time + 1
+  if (time = 1200)[
+   set time 0
+  ]
   tick
   if vid:recorder-status = "recording" [ vid:record-view ]
 end
@@ -209,16 +233,15 @@ to save-recording
     user-message error-message
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-647
-448
+530
+32
+1255
+758
 -1
 -1
-13.0
+21.73
 1
 10
 1
@@ -343,7 +366,7 @@ number-of-children
 number-of-children
 0
 40
-15.0
+5.0
 1
 1
 NIL
@@ -358,7 +381,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-10.0
+1.0
 1
 1
 NIL
@@ -369,26 +392,11 @@ SLIDER
 173
 185
 206
-number-of-polices
-number-of-polices
+number-of-police
+number-of-police
 0
-40
-10.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-17
-224
-189
-257
-number-of-child
-number-of-child
-0
-40
-20.0
+50
+3.0
 1
 1
 NIL
@@ -403,7 +411,82 @@ number-of-adult
 number-of-adult
 0
 30
-10.0
+6.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+12
+396
+184
+429
+number-of-stash-houses
+number-of-stash-houses
+1
+5
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+11
+440
+183
+473
+number-of-houses
+number-of-houses
+1
+5
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+12
+485
+184
+518
+number-of-hideouts
+number-of-hideouts
+1
+5
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+353
+189
+386
+number-of-schools
+number-of-schools
+1
+5
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+309
+206
+342
+number-of-child-gangsters
+number-of-child-gangsters
+0
+20
+5.0
 1
 1
 NIL
@@ -479,6 +562,21 @@ Circle -7500403 true true 110 127 80
 Circle -7500403 true true 110 75 80
 Line -7500403 true 150 100 80 30
 Line -7500403 true 150 100 220 30
+
+building store
+false
+0
+Rectangle -7500403 true true 30 45 45 240
+Rectangle -16777216 false false 30 45 45 165
+Rectangle -7500403 true true 15 165 285 255
+Rectangle -16777216 true false 120 195 180 255
+Line -7500403 true 150 195 150 255
+Rectangle -16777216 true false 30 180 105 240
+Rectangle -16777216 true false 195 180 270 240
+Line -16777216 false 0 165 300 165
+Polygon -7500403 true true 0 165 45 135 60 90 240 90 255 135 300 165
+Rectangle -7500403 true true 0 0 75 45
+Rectangle -16777216 false false 0 0 75 45
 
 butterfly
 true

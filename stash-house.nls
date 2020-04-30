@@ -1,0 +1,57 @@
+stash-houses-own [
+  next-task
+  weapons
+  drugs
+]
+
+to setup-stash-houses
+  
+
+  let Q number-of-stash-houses
+    
+  ask n-of Q lowerclass[
+    sprout-stash-houses 1 [ 
+      set shape "house" 
+      set color yellow 
+      set size 1 
+      set weapons 1
+      set drugs 1
+      set next-task [ -> be-stash-house]
+    ]
+    
+  ]
+  
+    ask n-of Q middleclass[
+    sprout-stash-houses 1 [ 
+      set shape "house" 
+      set color yellow 
+      set size 1 
+      set next-task [ -> be-stash-house]
+      set weapons 1
+      set drugs 1
+    ]
+    
+  ]
+  
+    ask n-of Q upperclass[
+    sprout-stash-houses 1 [ 
+      set shape "house" 
+      set color yellow 
+      set size 1 
+      set next-task [ -> be-stash-house]
+      set weapons 1
+      set drugs 1
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-stash-house
+  
+end

@@ -1,0 +1,58 @@
+hideouts-own [
+  weapons
+  drugs
+  next-task
+]
+
+to setup-hideouts
+  
+
+    let Q number-of-hideouts
+
+    
+  ask n-of Q lowerclass[
+    sprout-hideouts 1 [ 
+      set shape "house" 
+      set color grey 
+      set size 1 
+      set next-task [ -> be-hideout]
+      set weapons 1
+      set drugs 1
+    ]
+    
+  ]
+  
+    ask n-of Q middleclass[
+    sprout-hideouts 1 [ 
+      set shape "house" 
+      set color grey
+      set size 1 
+      set weapons 1
+      set drugs 1
+      set next-task [ -> be-hideout]
+    ]
+    
+  ]
+  
+    ask n-of Q upperclass[
+    sprout-hideouts 1 [ 
+      set shape "house" 
+      set color grey
+      set size 1 
+      set weapons 1
+      set drugs 1
+      set next-task [ -> be-hideout]
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-hideout
+  
+end

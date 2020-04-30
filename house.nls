@@ -1,0 +1,50 @@
+houses-own [
+  next-task
+]
+
+to setup-houses
+  
+
+  let Q number-of-houses
+
+    
+  ask n-of Q lowerclass[
+    sprout-houses 1 [ 
+      set shape "house" 
+      set color green
+      set size 1 
+      set next-task [ -> be-house]
+    ]
+    
+  ]
+  
+    ask n-of Q middleclass[
+    sprout-houses 1 [ 
+      set shape "house" 
+      set color green
+      set size 1 
+      set next-task [ -> be-house]
+    ]
+    
+  ]
+  
+    ask n-of Q upperclass[
+    sprout-houses 1 [ 
+      set shape "house" 
+      set color green
+      set size 1 
+      set next-task [ -> be-house]
+    ]
+    
+  ]
+    
+    
+
+  
+
+
+end
+
+to be-house
+  
+end

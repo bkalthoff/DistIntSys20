@@ -2,7 +2,6 @@ adult-gangsters-own [
   role
   age
   status
-  state
   hometerritory
   home-id
   next-task
@@ -11,31 +10,33 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
-
+  
   gangMembers
   gang
 
+  pickup-place
   drugOrders
   isWorking?
+  drugsDelivered?
 ]
 
 ; the set up needs to implement the new terretories, 
 to setup-adult-Gangster
   
   let Q number-of-adultGangster 
-  ask n-of Q patches with [pcolor = brown]
-  [sprout-adult-gangsters 1 [ set shape "person" ifelse random 100 < 49 [set gang red] [set gang blue] set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
+  ask n-of Q lowerclass
+  [sprout-adult-gangsters 1 [ set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2] set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
   
-  ask n-of Q patches with [pcolor = red]
+  ask n-of Q middleclass
   
-  [sprout-adult-gangsters 1 [set shape "person" ifelse random 100 < 49 [set gang red] [set gang blue]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
-  ask n-of Q patches with [pcolor = blue]
-    [sprout-adult-gangsters 1 [ set shape "person" ifelse random 100 < 49 [set gang red] [set gang blue]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
+  [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
+  ask n-of Q upperclass
+    [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
  
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
-    set gangster-hideout hideout random 2
+    set gangster-hideout min-one-of hideouts [distance myself]
     ifelse gang = red
     [setupGangmembers red]
     [setupGangmembers blue]
@@ -51,17 +52,17 @@ end
 
 
 
-to setup-hidingplaces
-  
-  create-hidingplaces 2 [ 
-    set shape "house"
-    set color green
-    set size 2
-    setxy random-xcor random-ycor
-    set next-task ""
-  ]
-
-end
+;to setup-hidingplaces
+;  
+;  create-hidingplaces 2 [ 
+;    set shape "house"
+;    set color green
+;    set size 2
+;    setxy random-xcor random-ycor
+;    set next-task ""
+;  ]
+;
+;end
 
 
 
@@ -120,13 +121,13 @@ to adult-gangster-hide
  ; lt 180                                                                      ; turn 180 degrees and walk that way
  ; set hidden? true                                     ; for demo purpose
 
-    set heading towards gangster-hideout
-    forward 0.25
-    ifelse ticks mod 50 = 0 and distance gangster-hideout < 0.1 [
-     set next-task [ -> adult-gangster-idle] 
-    ][           
-     set next-task [ -> adult-gangster-hide]
-    ]
+  face gangster-hideout
+  forward 0.25
+  ifelse ticks mod 50 = 0 and distance gangster-hideout < 0.3 [
+    set next-task [ -> adult-gangster-idle] 
+  ][           
+    set next-task [ -> adult-gangster-hide]
+  ]
   
 end
 
@@ -136,42 +137,46 @@ end
 ; take drug orders
 ; tell child-gangsters to deliver orders
 ; recruit adults to join gang
-to adult-gangster-work
+to adult-gangster-work 
  
  
   set isWorking? true
   
   ifelse empty? drugOrders = false [set next-task [-> drug-order]] [ 
+    right random 45
+    left random 45
+    forward 0.5
     set next-task [ -> adult-gangster-idle]
 
   ]
  
+  if drugsDelivered? = true [
+    set next-task [ -> confirm-delivery pickup-place]
+  ]
+end
+
+to confirm-delivery [place-to-pickup]
+  ask first drugOrders[
+    set pickUpPlace place-to-pickup
+    set drugsDelivered? true
+  ]
+  
 end
 
 to drug-order
  
- 
-  let childGangsterClose child-gangsters in-radius 2
-  if any? childGangsterClose [    
-    set next-task [-> give-delivery-instructions first drugOrders]  
+  let closestHideout min-one-of other hideouts [distance myself]
+  let childGangsterClose min-one-of other child-gangsters [distance myself]
+  if childGangsterClose != nobody [  
+    ask childGangsterClose [set drugAdress closestHideout]
+    ; set next-task [-> give-delivery-instructions first drugOrders]  Ersätt med att ge delivery instructions
   ]  
   ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
-  show drugOrders
-  set size 2
-  set stoppedByAdult "false"                          
-  
+  ;show drugOrders
+  set size 1
+  set stoppedByAdult "false"    
+  set next-task [-> adult-gangster-idle]
 end
-
-to give-delivery-instructions [customer]
-  ask child-gangsters in-radius 2 [ 
-    ; vet ej om jag måste fråga om de är i radius 2 igen, men kanske sätter för alla annars, procedure kanske är onödig, sätter i drug order annars
-    
-    ; get drugs at hideout
-    ; set drug-drop-location;insert drop off location for drugs
-  ]
-end
-
-
 
 
 

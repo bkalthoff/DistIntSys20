@@ -2,21 +2,25 @@
 police-own [
   next-task
   person-to-search
+  person-to-follow
   search-tick
+  follow-tick
   someoneAskedForHelp
+  ImOccupied
+  RespondingOnHelp
 ]
 
 to setup-police
   
-  create-police 3
+  create-police number-of-police
   [
     set shape  "person police"
     set color blue
     set search-tick 0
     set size 2
+    set follow-tick -1
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
-    
   ]
   
 end
@@ -35,23 +39,31 @@ to move-police
   ]
   forward 0.5
   
-  if any? (adults-here with [ stoppedByPolice = 0 and state != "work" ]) [
+  ifelse any? (adults-here with [ stoppedByPolice? = false and state != "work" ]) [
     let target one-of adults-here
     ask target [
-      set stoppedByPolice 1
-      ;set previous-task next-task
-      ;set next-task [ -> adults-stopped-by-police ]
+      set stoppedByPolice? true
     ]
     set person-to-search target
     set next-task [ -> search-person ]
+  ][
+    if any? child-gangsters-here with [followedByPolice? = false and hidden? = false] [
+      let target one-of child-gangsters-here
+      ask target [
+        set followedByPolice? true
+      ]
+      set person-to-follow target
+      set next-task [ -> police-follow-child-gangster ]
+    ]
   ]
   
-  ;if [is-hiding-place] of patch-here = true [
-  ;    set next-task [ -> search-place ]
-
+    if any? (hideouts-here with [drugs > 0 or weapons > 0]) or any?(stash-houses-here with [drugs > 0 or weapons > 0])[
+      set next-task [ -> ask-for-help ]
+  ]
 end
 
 to search-person
+  set ImOccupied 1
   set search-tick search-tick + 1
   if search-tick = 10[
     ask person-to-search [
@@ -61,23 +73,89 @@ to search-person
         set arrested-time ticks
       ]
       [
-        set stoppedByPolice 0
+        set stoppedByPolice? false
       ]
     ]
     ifelse [ arrested-time ] of person-to-search != -1 [
       set next-task [ -> police-go-to-jail ]
     ]
-    [ set next-task [ -> move-police ] ]
+    [ set ImOccupied 0
+      set next-task [ -> move-police ] ]
     set search-tick 0
   ]
 end
-
 to police-go-to-jail
-  ifelse distancexy -11 -11 > 1 [
-    set heading towardsxy-nowrap  -11 -11
+  ifelse distance min-one-of (prison) [distance myself]> 1 [
+    set heading towards-nowrap one-of prison with [count turtles-here = 0]
           forward 0.5
   ]
   [
+    set ImOccupied 0
     set next-task [ -> move-police]
+  ]
+end
+
+to ask-for-help  
+  let IAskedForHelp self
+  set ImOccupied 1
+  set someoneAskedForHelp 1
+  ifelse any? other police with [ImOccupied = 0] [
+    set RespondingOnHelp min-one-of (other police with [ImOccupied = 0]) [distance myself]
+ 
+  ask RespondingOnHelp [ 
+    set heading towards-nowrap IAskedForHelp
+    if distance min-one-of (other police) [distance myself] > 2 [
+    fd 1
+    ]
+  ]
+  ask IAskedForHelp [
+    if any? (police-on neighbors) [
+      set next-task [-> search-place]
+    ]
+  ]
+]
+  [    set next-task [-> ask-for-help]
+  ]
+end
+
+to search-place
+  ifelse any? hideouts-here[ 
+  let hideout-to-search hideouts-here
+  ask hideout-to-search [
+    set weapons 0
+    set drugs 0
+    set color orange 
+    ]
+  ][
+    let stash-houses-to-search stash-houses-here
+    ask stash-houses-to-search [
+        set weapons 0
+        set drugs 0
+        set color pink
+    ]
+  ]
+  set ImOccupied 0
+      set next-task [-> move-police]
+end
+
+to police-follow-child-gangster
+  set follow-tick follow-tick + 1
+  ifelse [hidden?] of person-to-follow = true or follow-tick = 400 [
+    set follow-tick -1
+    set next-task [ -> move-police ]
+  ]
+  [
+    set heading towards person-to-follow
+    ifelse [distance person-to-follow] of self < 3 [
+      ifelse [distance person-to-follow] of self < 1 [
+        stop
+      ]
+      [
+        forward 0.2
+      ]
+    ]
+    [
+      forward 0.5
+    ]
   ]
 end
