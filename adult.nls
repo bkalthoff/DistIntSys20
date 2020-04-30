@@ -20,7 +20,7 @@ adults-own [
 ]
 
 to setup-adults
-  create-adults 10 [
+  create-adults number-of-adults [
     setxy 0 0
     set color white
     set shape "person"
@@ -30,7 +30,8 @@ to setup-adults
     set label homeArea
     set label-color green
     set job? one-of [true false]
-    set drugUser? one-of [true false]
+    ;set drugUser? one-of [true false]
+    set drugUser? true
     set homexy array:from-list n-values 2 [0]
     set homeArea 1 + random 3
     adults-moving homeArea
@@ -157,29 +158,39 @@ to adults-consuming-drugs
       set drugOrders lput myself drugOrders
       
     ]
-     set dest [-> adults-go-home]
-     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    set dest [-> adults-go-home]
+    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
-  
+
   
   [
-
+    
+    ifelse (drugsDelivered? = true)[
+      set next-task[-> fetch-drugs]
+    ]
+    [
+      set dest [-> adults-go-home]
+      set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    ]
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;remove this once the children have been implemented
-    ;set next-task[-> fetch-drugs pickUpPlace]
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ]
+ 
 
+  
 end
 
-to fetch-drugs [destination]
-    ifelse distance destination > 1 [
-      face destination
+to fetch-drugs
+    ifelse distance pickUpPlace > 1 [
+      face pickUpPlace
       forward 0.5
   ]
   [
     set hasDrugs? true
-    ask destination[
+    set drugsDelivered? false
+    set color green
+    ask pickUpPlace[
       set drugs (drugs - 1)
     ]
     set dest [-> adults-go-home]

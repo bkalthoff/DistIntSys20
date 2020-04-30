@@ -13,7 +13,7 @@ adult-gangsters-own [
   
   gangMembers
   gang
-
+  
   pickup-place
   drugOrders
   isWorking?
@@ -32,7 +32,7 @@ to setup-adult-Gangster
   [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
   ask n-of Q upperclass
     [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
- 
+  
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
     array:set homexy 0 xcor  array:set homexy 1 ycor   
@@ -46,7 +46,7 @@ to setup-adult-Gangster
     
     ;print self print gangMembers
   ]
-
+  
 end
 
 
@@ -72,17 +72,17 @@ end
 ; has been "activated" 
 ;
 to adult-gangster-idle
-    ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
-     ;set hidden? false                                                ; for demo purpose
-     let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
-     ifelse any? policeClose [set next-task [ -> adult-gangster-hide]] [ ; police is in line of sight hide
-       set next-task [-> adult-gangster-work]
-     ]
-     
-   
-   ]
- ; <------------------------------------------ astronomical-day-state = "day" doesnt work  old code ---- ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]
-
+  ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
+                                                                                      ;set hidden? false                                                ; for demo purpose
+    let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
+    ifelse any? policeClose [set next-task [ -> adult-gangster-hide]] [ ; police is in line of sight hide
+      set next-task [-> adult-gangster-work]
+    ]
+    
+    
+  ]
+  ; <------------------------------------------ astronomical-day-state = "day" doesnt work  old code ---- ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]
+  
 end
 
 
@@ -105,11 +105,11 @@ end
 ; the stoppedByPolice should be toggled by the police when they are finished searching the gangster
 ;
 to adult-gangster-stand
-    
-    set stoppedByPolice "false"                                               ; this should be toggled by the police 
-    fd 0
-    set next-task [-> adult-gangster-idle]      
-
+  
+  set stoppedByPolice "false"                                               ; this should be toggled by the police 
+  fd 0
+  set next-task [-> adult-gangster-idle]      
+  
 end
 
 
@@ -118,9 +118,9 @@ end
 ; the gangster will walk to the closest hiding place, when finished
 ;
 to adult-gangster-hide                               
- ; lt 180                                                                      ; turn 180 degrees and walk that way
- ; set hidden? true                                     ; for demo purpose
-
+  ; lt 180                                                                      ; turn 180 degrees and walk that way
+  ; set hidden? true                                     ; for demo purpose
+  
   face gangster-hideout
   forward 0.25
   ifelse ticks mod 50 = 0 and distance gangster-hideout < 0.3 [
@@ -138,8 +138,8 @@ end
 ; tell child-gangsters to deliver orders
 ; recruit adults to join gang
 to adult-gangster-work 
- 
- 
+  
+  
   set isWorking? true
   
   ifelse empty? drugOrders = false [set next-task [-> drug-order]] [ 
@@ -147,9 +147,9 @@ to adult-gangster-work
     left random 45
     forward 0.5
     set next-task [ -> adult-gangster-idle]
-
+    
   ]
- 
+  
   if drugsDelivered? = true [
     set next-task [ -> confirm-delivery pickup-place]
   ]
@@ -164,12 +164,19 @@ to confirm-delivery [place-to-pickup]
 end
 
 to drug-order
- 
+  
   let closestHideout min-one-of other hideouts [distance myself]
   let childGangsterClose min-one-of other child-gangsters [distance myself]
-  if childGangsterClose != nobody [  
-    ask childGangsterClose [set drugAdress closestHideout]
-    ; set next-task [-> give-delivery-instructions first drugOrders]  Ersätt med att ge delivery instructions
+  let order first drugOrders
+  set drugOrders remove-item 0 drugOrders
+  if childGangsterClose != nobody and [slinging?] of childGangsterClose = false [  
+    ask childGangsterClose [
+      set hideoutAdress closestHideout
+      set adult-reciever order
+      set slinging? true
+      set next-task [-> recieve-delivery-instructions]   ;  Ersätt med att ge delivery instructions
+    ]
+
   ]  
   ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
   ;show drugOrders

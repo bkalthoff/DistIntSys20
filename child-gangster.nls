@@ -6,7 +6,8 @@ child-gangsters-own [
   homeAdress
   next-task
   schoolAdress
-  drugAdress
+  hideoutAdress
+  stash-houseAdress
   status
   recruits
   child-to-recruit
@@ -21,7 +22,9 @@ child-gangsters-own [
   followedByPolice?
   skipAttempt?
   carriesDrug?
-  slinging? 
+  slinging?
+  
+  adult-reciever 
 ]
 
 
@@ -53,9 +56,17 @@ to child-gangster-walk-around
   right random 45
   left random 45 
   forward 0.25
-
+  
   let temp-child-gangster self
   let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
+  
+  
+  ifelse(slinging? = true)[
+    set next-task [-> child-gangster-go-to-stash-house]
+  ]
+  
+  [
+  
   
   ifelse(temp-child-to-recruit != nobody)[
     ask temp-child-to-recruit[
@@ -70,22 +81,16 @@ to child-gangster-walk-around
       ]
     ]
   ] [
+    
+    if (time + leavingOffset > 1000 or time + leavingOffset < 200)[      
+      set next-task [-> child-gangster-go-home]      
+    ]
+  ]  
 
-    ifelse (slinging? = true)[
-      
-      set next-task [-> child-gangster-go-to-stash-house]
-      
-    ] [
-      
-      if (time + leavingOffset > 1000 or time + leavingOffset < 200)[      
-        set next-task [-> child-gangster-go-home]      
-      ]
-    ]  
   ]
-  
-  
-  
-  
+
+
+
 end
 
 to set-next-task [next]
@@ -220,26 +225,45 @@ end
 ;  
 ;end
 
+
+
 to child-gangster-go-to-stash-house
-  face drugAdress
-  forward 0.1
+  face stash-houseAdress
+  forward 0.25
   
-  if(distance drugAdress < 1)[
+  if(distance stash-houseAdress < 1)[
     set carriesDrug? true
-    set drugAdress one-of stash-houses
     set next-task [-> child-gangster-transport-drugs]
   ]
 end
 
 to child-gangster-transport-drugs
-  face drugAdress
-  forward 0.1
+  face hideoutAdress
+  forward 0.25
   
-  if(distance drugAdress < 1)[
+  if(distance hideoutAdress < 1)[
+    ask hideoutAdress [
+     set drugs drugs + 1 
+    ]
     set status status + 10
     set carriesDrug? false
     set slinging? false
+    
+    
+    let tempHideOutAdress hideoutAdress
+    ask adult-reciever [
+      set pickUpPlace tempHideOutAdress
+      set drugsDelivered? true
+      
+    ]
+    
     set next-task [-> child-gangster-walk-around]
   ]
+  
+end
+
+to recieve-delivery-instructions 
+  set stash-houseAdress min-one-of stash-houses [distance myself]
+  set next-task [-> child-gangster-go-to-stash-house]
   
 end

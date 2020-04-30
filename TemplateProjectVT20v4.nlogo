@@ -366,7 +366,7 @@ number-of-children
 number-of-children
 0
 40
-5.0
+1.0
 1
 1
 NIL
@@ -381,7 +381,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-1.0
+10.0
 1
 1
 NIL
@@ -407,11 +407,11 @@ SLIDER
 129
 186
 162
-number-of-adult
-number-of-adult
+number-of-adults
+number-of-adults
 0
 30
-6.0
+7.0
 1
 1
 NIL
@@ -441,7 +441,7 @@ number-of-houses
 number-of-houses
 1
 5
-5.0
+1.0
 1
 1
 NIL
@@ -486,7 +486,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-5.0
+10.0
 1
 1
 NIL
