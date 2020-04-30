@@ -61,6 +61,7 @@ to child-go-to-school
   
   if (distance schoolAdress < speed)[
     set hidden? true
+    set recruitAttempt? true
     set next-task[-> child-in-school]
   ]
 end
@@ -106,7 +107,7 @@ to child-turn-to-child-gangster
     forward 0.1
   ][
     set tickStandStill tickStandStill + 1
-    if (tickStandStill = 50)[
+    if (tickStandStill = 25)[
       set tickStandStill 0
       set next-task previous-task
     ]

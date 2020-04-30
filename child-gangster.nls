@@ -28,15 +28,15 @@ child-gangsters-own [
 to setup-agent-child-gangster
   set-default-shape child-gangsters "person"
   create-ordered-child-gangsters number-of-child-gangsters [ ; number-of-child-gangsters changed to integer
-  
-   set homeAdress one-of houses
-   setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
+    
+    set homeAdress one-of houses
+    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
     set schoolAdress min-one-of schools [ distance myself ]
     ;set birthDay 1 + random 9
     ;set age 5 + random 5
     set color yellow
     set status 10 + random 10
-   ; set label age
+    ;set label age
     set recruits 0
     set skipAttempt? false
     set carriesDrug? false
@@ -56,69 +56,47 @@ to child-gangster-walk-around
   
   
   
-;  set heading random 360
-;  let nextPatch patch-ahead 3
-;  let currentPatch patch-here
-;  
-;  ifelse ([pcolor] of currentPatch != grey)[
-;    face one-of patches with [pcolor = grey]
-;    forward speed
-;  ][
-;    
-;  
-;  if (nextPatch != nobody)[
-;      ifelse ([pcolor] of patch-ahead 3 = yellow or [pcolor] of patch-ahead 3 = green)[
-;    back speed
-;  ] [
-;    forward speed
-;    ]
-;  ]
-;  
-
-;  
-;    
-;
-;  let temp-child-gangster self
-;  let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
-;
-;
-;  ifelse(temp-child-to-recruit != nobody)[
-;      ask temp-child-to-recruit[
-;
-;    set recruiter temp-child-gangster
-;    set recruitAttempt? true
-;
-;
-;    set-next-task[-> child-turn-to-child-gangster]
-;
-;    ask temp-child-gangster [
-;      set child-to-recruit temp-child-to-recruit
-;      set next-task [-> child-gangster-recruit-attempt]
-;    ]
-;
-;
-;    ]
-;  ] [
-;      
-;  
-;      ifelse (slinging? = true)[
-;    
-;        set next-task [-> child-gangster-go-to-stash-house]
-;
-;  ] [
-;        
-;        if (time + leavingOffset > 2300 or time + leavingOffset < 400)[      
-;          set next-task [-> child-gangster-go-home]      
-;        ]
-;      ]  
-;    ]
-;    
-;
-;  ] 
   
-    if (time + leavingOffset > 1000 or time + leavingOffset < 200)[
-    set next-task [-> child-gangster-go-home]
+  
+  
+  
+  
+  let temp-child-gangster self
+  let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
+  
+  
+  ifelse(temp-child-to-recruit != nobody)[
+    ask temp-child-to-recruit[
+      
+      set recruiter temp-child-gangster
+      set recruitAttempt? true
+      
+      
+      set-next-task[-> child-turn-to-child-gangster]
+      
+      ask temp-child-gangster [
+        set child-to-recruit temp-child-to-recruit
+        set next-task [-> child-gangster-recruit-attempt]
+      ]
+      
+      
+    ]
+  ] [
+    
+    
+    ifelse (slinging? = true)[
+      
+      set next-task [-> child-gangster-go-to-stash-house]
+      
+    ] [
+      
+      if (time + leavingOffset > 1000 or time + leavingOffset < 200)[      
+        set next-task [-> child-gangster-go-home]      
+      ]
+    ]  
   ]
+  
+  
   
   
 end
@@ -134,11 +112,11 @@ end
 to child-gangster-at-home
   
   if (time + leavingOffset = 800)[
-   set hidden? false
-   
-   set next-task[-> child-gangster-walk-around]
+    set hidden? false
+    
+    set next-task[-> child-gangster-walk-around]
   ]
-
+  
   if (time + leavingOffset = 200)[
     set hidden? false
     set skipAttempt? false
@@ -153,7 +131,7 @@ to child-gangster-go-to-school
   set directionOffset random 100 + random -100
   set heading heading + directionOffset
   forward speed
-
+  
   if (distance schoolAdress < speed)[
     set hidden? true
     set next-task[-> child-gangster-in-school]
@@ -161,16 +139,16 @@ to child-gangster-go-to-school
   
   let currentPatch patch-here
   
-     
-    let roll random 50
-    ifelse(roll < status and skipAttempt? = false)[
-      set next-task[-> child-gangster-walk-around]
-    ][
-        set skipAttempt? true
+  
+  let roll random 10
+  ifelse(roll < status and skipAttempt? = false)[
+    set next-task[-> child-gangster-walk-around]
+  ][
+    set skipAttempt? true
   ]
-    
-
-
+  
+  
+  
   
   
 end
@@ -186,28 +164,28 @@ end
 
 to child-gangster-recruit-attempt
   face child-to-recruit
-    ifelse(distance child-to-recruit > 1)[
-     forward 0.1
+  ifelse(distance child-to-recruit > 1)[
+    forward 0.1
   ] [
-     set tickStandStill tickStandStill + 1
-    if (tickStandStill = 50)[
+    set tickStandStill tickStandStill + 1
+    if (tickStandStill = 25)[
       
       let roll random 150
       
       if(status > roll)[
-      ;  link-agents self child-to-recruit
+        ;  link-agents self child-to-recruit
         set status status + 10
         
         ask child-to-recruit[
-        set breed child-gangsters      
-        set color yellow  
-        set status 10 + random 5    
-        set recruits 0  
-        set next-task [-> child-gangster-walk-around]
+          set breed child-gangsters      
+          set color yellow  
+          set status 10 + random 5    
+          set recruits 0  
+          set next-task [-> child-gangster-walk-around]
         ]
         
       ]
-            
+      
       set tickStandStill 0
       set next-task [-> child-gangster-walk-around]
     ]
@@ -221,8 +199,8 @@ to child-gangster-go-home
   set directionOffset random 100 + random -100
   set heading heading + directionOffset
   forward speed
-
-    if (distance homeAdress < speed)[
+  
+  if (distance homeAdress < speed)[
     set hidden? true
     set next-task[-> child-gangster-at-home]
   ]
