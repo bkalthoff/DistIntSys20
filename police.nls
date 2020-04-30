@@ -2,7 +2,9 @@
 police-own [
   next-task
   person-to-search
+  person-to-follow
   search-tick
+  follow-tick
   someoneAskedForHelp
   ImOccupied
   RespondingOnHelp
@@ -16,9 +18,9 @@ to setup-police
     set color blue
     set search-tick 0
     set size 2
+    set follow-tick -1
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
-    
   ]
   
 end
@@ -37,18 +39,21 @@ to move-police
   ]
   forward 0.5
   
-  ifelse any? (adults-here with [ stoppedByPolice = 0 and state != "work" ]) [
+  ifelse any? (adults-here with [ stoppedByPolice? = false and state != "work" ]) [
     let target one-of adults-here
     ask target [
-      set stoppedByPolice 1
-      ;set previous-task next-task
-      ;set next-task [ -> adults-stopped-by-police ]
+      set stoppedByPolice? true
     ]
     set person-to-search target
     set next-task [ -> search-person ]
   ][
-    if any? child-gangsters-here with [followedByPolice? = false][
-      
+    if any? child-gangsters-here with [followedByPolice? = false and hidden? = false] [
+      let target one-of child-gangsters-here
+      ask target [
+        set followedByPolice? true
+      ]
+      set person-to-follow target
+      set next-task [ -> police-follow-child-gangster ]
     ]
   ]
   
@@ -68,7 +73,7 @@ to search-person
         set arrested-time ticks
       ]
       [
-        set stoppedByPolice 0
+        set stoppedByPolice? false
       ]
     ]
     ifelse [ arrested-time ] of person-to-search != -1 [
@@ -131,4 +136,26 @@ to search-place
   ]
   set ImOccupied 0
       set next-task [-> move-police]
+end
+
+to police-follow-child-gangster
+  set follow-tick follow-tick + 1
+  ifelse [hidden?] of person-to-follow = true or follow-tick = 400 [
+    set follow-tick -1
+    set next-task [ -> move-police ]
+  ]
+  [
+    set heading towards person-to-follow
+    ifelse [distance person-to-follow] of self < 3 [
+      ifelse [distance person-to-follow] of self < 1 [
+        stop
+      ]
+      [
+        forward 0.2
+      ]
+    ]
+    [
+      forward 0.5
+    ]
+  ]
 end

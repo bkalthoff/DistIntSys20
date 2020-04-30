@@ -8,7 +8,7 @@ adults-own [
   homexy
   homeArea
   state
-  stoppedByPolice
+  stoppedByPolice?
   hasDrugs?
   arrested-time
   orderedDrugs?
@@ -36,7 +36,7 @@ to setup-adults
     adults-moving homeArea
     
     set hasDrugs? False
-    set stoppedByPolice 0
+    set stoppedByPolice? false
     set arrested-time -1
     set orderedDrugs? false
     set inPrison? false
@@ -47,7 +47,7 @@ end
 
 to adults-go-home
   set state "home"
-  ifelse(stoppedByPolice = 1)[
+  ifelse(stoppedByPolice? = true)[
     
     set next-task [-> adults-stopped-by-police]
     
@@ -208,7 +208,7 @@ end
 
 to adults-stopped-by-police
   set state "stopped"
-  if stoppedByPolice = 0 [
+  if stoppedByPolice? = false [
     set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
@@ -228,7 +228,7 @@ to adults-go-to-jail
     if ticks - arrested-time = 2000 [
       set arrested-time -1
       set color white
-      set stoppedByPolice 0
+      set stoppedByPolice? false
       set dest [-> adults-go-home]
       set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
     ]

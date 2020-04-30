@@ -53,37 +53,24 @@ to child-gangster-walk-around
   right random 45
   left random 45 
   forward 0.25
-  
-  
-  
-  
-  
-  
-  
-  
+
   let temp-child-gangster self
   let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
-  
   
   ifelse(temp-child-to-recruit != nobody)[
     ask temp-child-to-recruit[
       
       set recruiter temp-child-gangster
-      set recruitAttempt? true
-      
-      
+      set recruitAttempt? true 
       set-next-task[-> child-turn-to-child-gangster]
       
       ask temp-child-gangster [
         set child-to-recruit temp-child-to-recruit
         set next-task [-> child-gangster-recruit-attempt]
       ]
-      
-      
     ]
   ] [
-    
-    
+
     ifelse (slinging? = true)[
       
       set next-task [-> child-gangster-go-to-stash-house]
@@ -134,6 +121,7 @@ to child-gangster-go-to-school
   
   if (distance schoolAdress < speed)[
     set hidden? true
+    set followedByPolice? false
     set next-task[-> child-gangster-in-school]
   ]
   
@@ -202,6 +190,7 @@ to child-gangster-go-home
   
   if (distance homeAdress < speed)[
     set hidden? true
+    set followedByPolice? false
     set next-task[-> child-gangster-at-home]
   ]
 end
