@@ -68,9 +68,10 @@ to search-person
   if search-tick = 10[
     ask person-to-search [
       ifelse hasDrugs? = true [
+        set numberOfConvictions numberOfConvictions + 1
         set color yellow
         set hasDrugs? false
-        set arrested-time ticks
+        set arrested-time ticks 
       ]
       [
         set stoppedByPolice? false
