@@ -2,6 +2,7 @@ adult-gangsters-own [
   role
   age
   status
+  money
   hometerritory
   home-id
   next-task
@@ -14,10 +15,12 @@ adult-gangsters-own [
   gangMembers
   gang
   
+  
+  adult-current-customer
   pickup-place
   drugOrders
   isWorking?
-  drugsDelivered?
+  adult-gangster-drugs-delivered?
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -25,13 +28,42 @@ to setup-adult-Gangster
   
   let Q number-of-adultGangster 
   ask n-of Q lowerclass
-  [sprout-adult-gangsters 1 [ set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2] set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
+  [sprout-adult-gangsters 1 [ 
+    set size 2 
+    set shape "person" 
+    ifelse random 100 < 49 [set gang red set color red + 2] 
+    [
+      set gang blue set color blue + 2
+    ] 
+    set next-task [ -> adult-gangster-idle]] 
+    sprout-gangster-homes 1 [set shape "house" set color brown ]
+  ]
   
   ask n-of Q middleclass
   
-  [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
+  [sprout-adult-gangsters 1 [
+    set size 2 
+    set shape "person" 
+    ifelse random 100 < 49 [set gang red set color red + 2] 
+    [
+      set gang blue set color blue + 2
+    ]  
+    set next-task [ -> adult-gangster-idle]] 
+    sprout-gangster-homes 1 [set shape "house" set color brown]
+  ]
+  
   ask n-of Q upperclass
-    [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
+  
+  [sprout-adult-gangsters 1 [
+    set size 2    
+    set shape "person" 
+    ifelse random 100 < 49 [set gang red set color red + 2] 
+    [
+      set gang blue set color blue + 2
+    ]  
+    set next-task [ -> adult-gangster-idle]
+  ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
+  
   
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
@@ -150,16 +182,21 @@ to adult-gangster-work
     
   ]
   
-  if drugsDelivered? = true [
+  if adult-gangster-drugs-delivered? = true [
+    set status status + 5 + random 10
+    set label status
     set next-task [ -> confirm-delivery pickup-place]
   ]
 end
 
 to confirm-delivery [place-to-pickup]
-  ask first drugOrders[
+  ask adult-current-customer[
     set pickUpPlace place-to-pickup
     set drugsDelivered? true
   ]
+  
+  set adult-gangster-drugs-delivered? false
+  set next-task[-> adult-gangster-idle]
   
 end
 
@@ -167,16 +204,19 @@ to drug-order
   
   let closestHideout min-one-of other hideouts [distance myself]
   let childGangsterClose min-one-of other child-gangsters [distance myself]
-  let order first drugOrders
-  set drugOrders remove-item 0 drugOrders
-  if childGangsterClose != nobody and [slinging?] of childGangsterClose = false [  
+  set adult-current-customer first drugOrders
+  let gangster-order self 
+  if childGangsterClose != nobody and [slinging?] of childGangsterClose = false and [hidden?] of childGangsterClose = false [ 
+    
+    set drugOrders remove-item 0 drugOrders
+    
     ask childGangsterClose [
       set hideoutAdress closestHideout
-      set adult-reciever order
+      set adult-gangster-order gangster-order
       set slinging? true
       set next-task [-> recieve-delivery-instructions]   ;  Ersätt med att ge delivery instructions
     ]
-
+    
   ]  
   ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
   ;show drugOrders
