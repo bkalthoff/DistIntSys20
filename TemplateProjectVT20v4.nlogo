@@ -382,7 +382,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-1.0
+17.0
 1
 1
 NIL
@@ -397,7 +397,7 @@ number-of-police
 number-of-police
 0
 50
-3.0
+4.0
 1
 1
 NIL
@@ -427,7 +427,7 @@ number-of-stash-houses
 number-of-stash-houses
 1
 5
-1.0
+2.0
 1
 1
 NIL
@@ -442,7 +442,7 @@ number-of-houses
 number-of-houses
 1
 5
-1.0
+2.0
 1
 1
 NIL
@@ -457,7 +457,7 @@ number-of-hideouts
 number-of-hideouts
 1
 5
-1.0
+2.0
 1
 1
 NIL
@@ -472,7 +472,7 @@ number-of-schools
 number-of-schools
 1
 5
-1.0
+2.0
 1
 1
 NIL
@@ -487,7 +487,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-1.0
+5.0
 1
 1
 NIL

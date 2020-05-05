@@ -21,6 +21,11 @@ adult-gangsters-own [
   drugOrders
   isWorking?
   adult-gangster-drugs-delivered?
+ ;Maybe change name later, increase when delivered drugs, decrease when gangster goes to jail?
+  status
+  leader?
+  ;Distrust against gang leader
+  distrust
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -78,6 +83,16 @@ to setup-adult-Gangster
     
     ;print self print gangMembers
   ]
+
+  ask one-of adult-gangsters with [gang = red] [
+      set leader? true
+      set size 3
+  ]
+  
+  ask one-of adult-gangsters with [gang = blue] [
+      set leader? true
+      set size 3
+  ]
   
 end
 
@@ -104,6 +119,16 @@ end
 ; has been "activated" 
 ;
 to adult-gangster-idle
+  ;Dummy code to test distrust variable, should be called a member in the gang gets put in prison
+  if random 50 = 0 [
+    set distrust distrust + 1
+  ]
+  
+  if (distrust >= count adult-gangsters with [gang = gang]) [
+    start-vote
+    set distrust distrust - 10
+  ]
+
   ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
                                                                                       ;set hidden? false                                                ; for demo purpose
     let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
@@ -223,6 +248,16 @@ to drug-order
   set size 1
   set stoppedByAdult "false"    
   set next-task [-> adult-gangster-idle]
+end
+
+;Kick the leader? Not a state
+to start-vote 
+  let totalDistrust 0
+  
+  ask adult-gangsters with [gang = gang] [
+    set totalDistrust totalDistrust + distrust
+  ]
+  
 end
 
 

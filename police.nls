@@ -8,7 +8,14 @@ police-own [
   someoneAskedForHelp
   ImOccupied
   RespondingOnHelp
+<<<<<<< HEAD
+  homeAdress
+  goToWork
+  dayShift?
+  shift
+=======
   status
+>>>>>>> 9c8cb1119d1dba7fefa1c407d166fb6fc25ded8b
 ]
 
 to setup-police
@@ -20,8 +27,19 @@ to setup-police
     set search-tick 0
     set size 2
     set follow-tick -1
+    set shift number-of-police
+    set homeAdress one-of houses
+    setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
+    ask police [
+      ifelse shift <= number-of-police / 2 [
+        set dayShift? true
+      ][
+        set dayShift? false
+      ]
+      set shift shift - 1
+    ]
   ]
   
 end
@@ -33,11 +51,24 @@ end
 to move-police
   ifelse abs xcor > 15 or ycor <= -10 or ycor > 14 and next-task != [ -> search-person ] [
     set heading towards patch 0 0
+  ] [
+    ifelse time >= 1199 or time <= 300 [
+      if dayShift? = true[
+        set next-task [-> police-go-home]
+      ]
+    ][
+      ifelse time >= 350 or time <= 650[
+        if dayShift? = false[
+          set next-task [-> police-go-home]
+        ]
+      ]
+      [
+        right random 45
+        left random 45
+      ]
+    ]
   ]
-  [
-    right random 45
-    left random 45
-  ]
+  
   forward 0.5
   
   ifelse any? (adults-here with [ stoppedByPolice? = false and state != "work" ]) [
@@ -61,6 +92,8 @@ to move-police
     if any? (hideouts-here with [drugs > 0 or weapons > 0]) or any?(stash-houses-here with [drugs > 0 or weapons > 0])[
       set next-task [ -> ask-for-help ]
   ]
+  
+  
 end
 
 to search-person
@@ -170,3 +203,21 @@ to police-follow-child-gangster
   ]
 end
 
+<<<<<<< HEAD
+
+to police-go-home
+  face homeAdress
+  forward 0.5
+  
+  if (distance homeAdress < 0.5)[
+    set next-task[-> police-at-home]
+  ]
+end
+
+to police-at-home
+   if (time  = 300)[
+    set next-task[-> move-police]
+  ]
+end
+=======
+>>>>>>> 9c8cb1119d1dba7fefa1c407d166fb6fc25ded8b
