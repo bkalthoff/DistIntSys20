@@ -411,7 +411,7 @@ number-of-adults
 number-of-adults
 0
 30
-7.0
+2.0
 1
 1
 NIL
@@ -426,7 +426,7 @@ number-of-stash-houses
 number-of-stash-houses
 1
 5
-1.0
+3.0
 1
 1
 NIL
@@ -456,7 +456,7 @@ number-of-hideouts
 number-of-hideouts
 1
 5
-1.0
+4.0
 1
 1
 NIL

@@ -8,6 +8,7 @@ police-own [
   someoneAskedForHelp
   ImOccupied
   RespondingOnHelp
+  status
 ]
 
 to setup-police
@@ -92,6 +93,8 @@ to police-go-to-jail
   ]
   [
     set ImOccupied 0
+    set status status + 1 
+    print self print status
     set next-task [ -> move-police]
   ]
 end
@@ -122,6 +125,9 @@ end
 to search-place
   ifelse any? hideouts-here[ 
   let hideout-to-search hideouts-here
+    if [drugs] of (one-of hideout-to-search) > 0 or [weapons]  of (one-of hideout-to-search) > 0
+    [set status status + 1]
+    print self print status
   ask hideout-to-search [
     set weapons 0
     set drugs 0
@@ -129,6 +135,9 @@ to search-place
     ]
   ][
     let stash-houses-to-search stash-houses-here
+    if [drugs] of (one-of stash-houses-to-search) > 0 or [weapons]  of (one-of stash-houses-to-search) > 0
+    [set status status + 1]
+    print self print status
     ask stash-houses-to-search [
         set weapons 0
         set drugs 0
@@ -160,3 +169,4 @@ to police-follow-child-gangster
     ]
   ]
 end
+
