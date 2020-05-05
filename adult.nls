@@ -17,6 +17,7 @@ adults-own [
   pickUpPlace
   drugsDelivered?
   
+  numberOfConvictions
 ]
 
 to setup-adults
@@ -36,13 +37,13 @@ to setup-adults
     set homeArea 1 + random 3
     adults-moving homeArea
     
-    set hasDrugs? False
+    set hasDrugs? false
     set stoppedByPolice? false
     set arrested-time -1
     set orderedDrugs? false
     set inPrison? false
     set drugsDelivered? false
-    
+    set numberOfConvictions 0
   ]
 end
 
@@ -236,7 +237,7 @@ to adults-go-to-jail
   ]
   
   [
-    if ticks - arrested-time = 2000 [
+    if ticks - arrested-time = 500 * numberOfConvictions [
       set arrested-time -1
       set color white
       set stoppedByPolice? false
