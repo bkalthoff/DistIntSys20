@@ -13,6 +13,7 @@ children-own [
   recruiter
   previous-task
   stoppedByPolice
+  time-in-school
 ]
 
 
@@ -30,10 +31,11 @@ to setup-child
     set color white
     set hidden? true
     set recruitAttempt? false
-    set leavingOffset random 25
+    set leavingOffset random 100
     set speed 0.25
     set tickStandStill 0
     set next-task [ -> child-at-home ]
+    set time-in-school 0
     
   ]
 end
@@ -68,6 +70,7 @@ end
 
 
 to child-in-school
+  set time-in-school time-in-school + 1
   if (time + leavingOffset = 600)[
     set hidden? false
     set recruitAttempt? false
