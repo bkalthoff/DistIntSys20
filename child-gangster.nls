@@ -24,7 +24,7 @@ child-gangsters-own [
   carriesDrug?
   slinging?
   
-  adult-reciever 
+  adult-gangster-order
 ]
 
 
@@ -202,28 +202,6 @@ end
 
 
 
-;to face-adult-gangster
-;  face adult-gangster-drugs
-;  ifelse(distance adult-gangster-drugs > 1)[
-;     forward 0.1
-;  ] [
-;     set tickStandStill tickStandStill + 1
-;    if (tickStandStill = 50)[
-;      set carriesDrug? true
-;      set tickStandStill 0
-;      set drugAdress one-of stash-houses
-;
-;      set next-task [-> transport-drugs]
-;      
-;      ask adult-gangster-drugs [
-;       set slinging? false 
-;      ]
-;
-;          
-;        ]    
-;  ]
-;  
-;end
 
 
 
@@ -251,9 +229,9 @@ to child-gangster-transport-drugs
     
     
     let tempHideOutAdress hideoutAdress
-    ask adult-reciever [
-      set pickUpPlace tempHideOutAdress
-      set drugsDelivered? true
+    ask adult-gangster-order [
+      set pickup-place tempHideOutAdress
+      set adult-gangster-drugs-delivered? true
       
     ]
     

@@ -94,6 +94,7 @@ to setup
   setup-agent-child-gangster
   setup-child
   setup-adults
+
   ;
   reset-ticks
   if vid:recorder-status = "recording" [ vid:record-view ]
@@ -381,7 +382,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-10.0
+1.0
 1
 1
 NIL
@@ -411,7 +412,7 @@ number-of-adults
 number-of-adults
 0
 30
-7.0
+5.0
 1
 1
 NIL
@@ -486,7 +487,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-10.0
+1.0
 1
 1
 NIL
