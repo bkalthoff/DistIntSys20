@@ -3,8 +3,10 @@ adults-own [
   previous-task
   dest
   job?
+  sick?
   drugUser?
   money
+  salary
   homexy
   homeArea
   state
@@ -31,10 +33,12 @@ to setup-adults
     set label homeArea
     set label-color green
     set job? one-of [true false]
+    set sick? false
     ;set drugUser? one-of [true false]
     set drugUser? true
     set homexy array:from-list n-values 2 [0]
     set homeArea 1 + random 3
+    set salary random 40 + (120 / (homeArea * 0.8))
     adults-moving homeArea
     
     set hasDrugs? false
@@ -57,10 +61,10 @@ to adults-go-home
   
   [
     
-    ifelse(job? = true)
+    ifelse job? = true
     [
       
-      ifelse(ticks mod 500 = 0)
+      ifelse time = 450
       [
         set dest [-> adults-work]
         set next-task [-> adults-walk 1 8]
@@ -70,6 +74,15 @@ to adults-go-home
         if(drugUser? = true) and (random 50 = 0) or (orderedDrugs? = true)
         [
           set next-task [ -> adults-consuming-drugs ]
+        ]
+        
+        ifelse time = 0 and random 100 >= 80 [
+          set sick? true
+          set shape "person doctor"
+        ]
+        [
+          set sick? false
+          set shape "person"
         ]
         
       ]
@@ -94,14 +107,15 @@ end
 
 to adults-work
   set state "work"
-  ifelse (random 500 = 0)
+  ifelse time = 850 and sick? = false
   [
+    adults-earn-money self salary
+    set label money
     set dest [-> adults-go-home]
     set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
   ]
 
   [
-    ;get payed
     ;rotate
   ]
 end
@@ -152,12 +166,16 @@ to adults-consuming-drugs
   
   ifelse (orderedDrugs? = false)
   [
-    set orderedDrugs? true
-    ;order the drugs
-    ask one-of adult-gangsters with[isWorking? = true ][ 
-    
-      set drugOrders lput myself drugOrders
-      
+    if money >= 50 [
+      adults-loose-money self 50
+      set label money
+      set orderedDrugs? true
+      ;order the drugs
+      ask one-of adult-gangsters with[isWorking? = true ][ 
+        
+        set drugOrders lput myself drugOrders
+        
+      ]
     ]
     set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
@@ -199,10 +217,24 @@ to fetch-drugs
   ]
 end
 
-to adults-get-paid
+to adults-process-money [ agent ]
+  ifelse [ job? ] of agent = false [
+    show "NO JOB"
+    adults-loose-money agent 100
+  ] [
+    show "GOT JOB"
+    adults-earn-money agent 100
+  ]
+  
+  ask agent [ set label money ]
 end
 
-to adults-spend-money
+to adults-earn-money [ agent amount ]
+  ask agent [ set money money + amount ]
+end
+
+to adults-loose-money [ agent amount ]
+  ask agent [ set money money - amount ]
 end
 
 to adults-move-turtle-pos [source destx desty]
