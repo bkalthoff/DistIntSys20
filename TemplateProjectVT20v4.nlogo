@@ -396,7 +396,7 @@ number-of-police
 number-of-police
 0
 50
-3.0
+4.0
 1
 1
 NIL
