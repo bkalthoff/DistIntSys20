@@ -8,14 +8,12 @@ police-own [
   someoneAskedForHelp
   ImOccupied
   RespondingOnHelp
-<<<<<<< HEAD
+
   homeAdress
   goToWork
   dayShift?
   shift
-=======
   status
->>>>>>> 9c8cb1119d1dba7fefa1c407d166fb6fc25ded8b
 ]
 
 to setup-police
@@ -203,7 +201,6 @@ to police-follow-child-gangster
   ]
 end
 
-<<<<<<< HEAD
 
 to police-go-home
   face homeAdress
@@ -219,5 +216,3 @@ to police-at-home
     set next-task[-> move-police]
   ]
 end
-=======
->>>>>>> 9c8cb1119d1dba7fefa1c407d166fb6fc25ded8b

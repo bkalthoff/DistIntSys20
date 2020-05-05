@@ -367,7 +367,7 @@ number-of-children
 number-of-children
 0
 40
-1.0
+40.0
 1
 1
 NIL
@@ -382,7 +382,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-17.0
+50.0
 1
 1
 NIL
@@ -397,7 +397,7 @@ number-of-police
 number-of-police
 0
 50
-4.0
+3.0
 1
 1
 NIL
@@ -412,7 +412,7 @@ number-of-adults
 number-of-adults
 0
 30
-5.0
+30.0
 1
 1
 NIL
@@ -487,7 +487,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-5.0
+2.0
 1
 1
 NIL
