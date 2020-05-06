@@ -14,6 +14,8 @@ children-own [
   previous-task
   stoppedByPolice
   time-in-school
+  sick?
+  skip?
 ]
 
 
@@ -36,22 +38,28 @@ to setup-child
     set tickStandStill 0
     set next-task [ -> child-at-home ]
     set time-in-school 0
-    
+    set sick? false
+    set skip? false
   ]
 end
 
 to child-at-home
-  
-  if (time + leavingOffset = 800)[
+  if (time + leavingOffset = 800 and not sick?)[
     set hidden? false
     set recruitAttempt? false
     set next-task[-> child-out-playing]
   ]
   
-  if (time + leavingOffset = 200)[
-    set hidden? false
-    set recruitAttempt? false
-    set next-task[-> child-go-to-school]
+  if (time + leavingOffset = 200) [
+    child-skip-or-sick
+    ifelse skip?
+      [set next-task[-> child-out-playing]]
+      [ifelse not sick? [
+        set hidden? false
+        set recruitAttempt? false
+        set next-task[-> child-go-to-school]]
+        [set next-task[-> child-go-home]]
+      ]
   ]
 end
 
@@ -117,7 +125,19 @@ to child-turn-to-child-gangster
   ]
 end
 
-
+to child-skip-or-sick
+  set sick? false
+  set skip? false
+  let rand random 10
+  (ifelse
+    rand = 0
+      [set sick? true]
+    rand = 1
+      [set skip? true
+       set hidden? false]
+    []
+  )
+end
 
 
 
