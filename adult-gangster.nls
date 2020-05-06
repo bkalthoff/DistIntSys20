@@ -142,8 +142,8 @@ to adult-gangster-idle
   
   if (time >= 950) or (time <= 299) [
     if (night-time = 0 ) [
-  let rand random 2
-      ifelse( rand = 2) [
+  let rand random 4
+      ifelse( rand = 0) [
         set night-time 1
         set next-task [ -> adult-gangster-idle]][
       set night-time 1
