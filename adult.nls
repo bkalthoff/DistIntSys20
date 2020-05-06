@@ -150,13 +150,15 @@ end
 to adults-consuming-drugs
   set state "Consuming-drugs"
   
+;  ifelse any? adult-gangsters with [isWorking? = true ] [
   ifelse (orderedDrugs? = false)
   [
     set orderedDrugs? true
     ;order the drugs
-    ask one-of adult-gangsters with[isWorking? = true ][ 
+    ask one-of adult-gangsters [ 
     
       set drugOrders lput myself drugOrders
+      show drugOrders
       
     ]
     set dest [-> adults-go-home]
@@ -177,6 +179,7 @@ to adults-consuming-drugs
     ;remove this once the children have been implemented
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ]
+ ; [ set next-task [-> adults-walk array:item homexy 0 array:item homexy 1 ]]
  
 
   

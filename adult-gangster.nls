@@ -26,6 +26,7 @@ adult-gangsters-own [
   leader?
   ;Distrust against gang leader
   distrust
+  night-time 
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -80,6 +81,7 @@ to setup-adult-Gangster
     
     set isWorking? false
     set drugOrders[]
+    set night-time 0
     
     ;print self print gangMembers
   ]
@@ -136,8 +138,23 @@ to adult-gangster-idle
       set next-task [-> adult-gangster-work]
     ]
     
-    
   ]
+  
+  if (time >= 950) or (time <= 299) [
+    if (night-time = 0 ) [
+  let rand random 2
+      ifelse( rand = 2) [
+        set night-time 1
+        set next-task [ -> adult-gangster-idle]][
+      set night-time 1
+     set next-task [ -> adult-gangster-go-home]
+    ]
+  ]
+  ]
+    
+    if ((time >= 300) and (time <= 949)) and (night-time = 1 ) [
+    set night-time 0
+    ] 
   ; <------------------------------------------ astronomical-day-state = "day" doesnt work  old code ---- ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]
   
 end
@@ -153,7 +170,10 @@ to adult-gangster-go-home
   [set heading towardsxy array:item homexy 0 array:item homexy 1
     forward 0.25
   ]
-  set next-task [ -> adult-gangster-idle]
+  ifelse (time = 300) [
+    set next-task [ -> adult-gangster-idle]
+  set night-time 0][
+    set next-task [ -> adult-gangster-go-home]]
 end
 
 
