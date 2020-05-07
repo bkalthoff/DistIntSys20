@@ -14,6 +14,11 @@ police-own [
   dayShift?
   shift
   status
+  
+  list-of-known-gangsters
+  gangster-to-investigate
+  chance-of-finding-gangster
+  
 ]
 
 to setup-police
@@ -27,6 +32,7 @@ to setup-police
     set follow-tick -1
     set shift number-of-police
     set homeAdress one-of houses
+    set list-of-known-gangsters []
     setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
@@ -83,6 +89,7 @@ to move-police
         set followedByPolice? true
       ]
       set person-to-follow target
+      set chance-of-finding-gangster 2
       set next-task [ -> police-follow-child-gangster ]
     ]
   ]
@@ -186,19 +193,25 @@ to police-follow-child-gangster
     set next-task [ -> move-police ]
   ]
   [
-    set heading towards person-to-follow
-    ifelse [distance person-to-follow] of self < 3 [
-      ifelse [distance person-to-follow] of self < 1 [
-        stop
+      
+    ifelse chance-of-finding-gangster = 0 and [carriesDrug?] of person-to-follow = true [        
+             
+        set next-task [ -> police-investigate ] 
+       
+    ][
+        set heading towards person-to-follow
+        ifelse [distance person-to-follow] of self < 3 [
+          ifelse [distance person-to-follow] of self < 1 [
+            stop
+          ][
+            forward 0.2
+          ]
+        ][
+          forward 0.5
+        ]      
       ]
-      [
-        forward 0.2
-      ]
-    ]
-    [
-      forward 0.5
-    ]
-  ]
+    
+  ]  
 end
 
 
@@ -216,3 +229,26 @@ to police-at-home
     set next-task[-> move-police]
   ]
 end
+
+to police-investigate
+    set follow-tick follow-tick + 1      
+    ifelse [hidden?] of person-to-follow = true or follow-tick = 600 [
+      set follow-tick -1
+      set next-task [ -> move-police ]
+      
+  ]
+  [
+    ask person-to-follow [
+      let temp-adult adult-gangster-order
+      ask one-of police [
+        set list-of-known-gangsters lput temp-adult list-of-known-gangsters
+        set list-of-known-gangsters remove-duplicates list-of-known-gangsters
+        show list-of-known-gangsters
+      ]
+    ]
+  ]
+  
+end
+
+
+
