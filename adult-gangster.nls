@@ -121,13 +121,13 @@ end
 ; has been "activated" 
 ;
 to adult-gangster-idle
-  ;Dummy code to test distrust variable, should be called a member in the gang gets put in prison
-  if random 50 = 0 [
+  ;Dummy code to test distrust variable, should be called when a member in the gang gets put in prison
+  if random 50 = 0 and distrust < count adult-gangsters with [gang = gang] [
     set distrust distrust + 1
   ]
-  
+  ;Starts a vote for a new leader if the distrust for a gangster is higher than the gang member count
   if (distrust >= count adult-gangsters with [gang = gang]) [
-    start-vote
+    start-vote gang
     set distrust distrust - 10
   ]
 
@@ -271,11 +271,44 @@ to drug-order
 end
 
 ;Kick the leader? Not a state
-to start-vote 
+to start-vote [gang-color]
   let totalDistrust 0
+  let gc gang-color
+  let gang-members count adult-gangsters with [gang = gc]
   
-  ask adult-gangsters with [gang = gang] [
+  ;Get the total distrust of all the gang members
+  ask adult-gangsters with [gang = gc] [
     set totalDistrust totalDistrust + distrust
+  ]
+  ; Assign a new leader if the majority of the gang has a high distrust rate
+  if (totalDistrust >= (gang-members ^ 2) / 2) [
+    ask adult-gangsters with [gang = gc and leader? = true] [
+     set leader? false
+     set size 2
+     set status 0 
+     assign-leader gc
+    ]
+  ] 
+  
+end
+
+; Assign the gangster with the highest status as the new gang leader
+to assign-leader [gang-color]
+  let gc gang-color 
+  let max-status 0
+  let new-leader 0
+  ; Reset distrust for all gang members and get member with highest status
+  ask adult-gangsters with [gang = gc] [
+   if status >= max-status [
+      set max-status status
+      set new-leader self
+      set distrust 0
+    ] 
+  ]
+  ; Assign new leader
+  ask new-leader [
+    set leader? true
+    set size 3 
   ]
   
 end
