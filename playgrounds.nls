@@ -1,0 +1,37 @@
+playgrounds-own [
+  next-task
+]
+
+to setup-playgrounds
+  let Q number-of-playgrounds
+  
+  ask n-of Q lowerclass[
+    sprout-playgrounds 1 [ 
+      set shape "ufo side" 
+      set color orange
+      set size 2 
+      set next-task [ -> be-playground]
+    ]
+  ]
+  
+  ask n-of Q middleclass[
+    sprout-playgrounds 1 [ 
+      set shape "ufo side" 
+      set color orange
+      set size 2
+      set next-task [ -> be-playground]
+    ]
+  ]
+  
+  ask n-of Q upperclass[
+    sprout-playgrounds 1 [ 
+      set shape "ufo side" 
+      set color orange
+      set size 2
+      set next-task [ -> be-playground]
+    ]
+  ]
+end
+
+to be-playground
+end

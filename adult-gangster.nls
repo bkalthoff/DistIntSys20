@@ -26,6 +26,7 @@ adult-gangsters-own [
   leader?
   ;Distrust against gang leader
   distrust
+  night-time 
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -80,6 +81,7 @@ to setup-adult-Gangster
     
     set isWorking? false
     set drugOrders[]
+    set night-time 0
     
     ;print self print gangMembers
   ]
@@ -119,13 +121,13 @@ end
 ; has been "activated" 
 ;
 to adult-gangster-idle
-  ;Dummy code to test distrust variable, should be called a member in the gang gets put in prison
-  if random 50 = 0 [
+  ;Dummy code to test distrust variable, should be called when a member in the gang gets put in prison
+  if random 50 = 0 and distrust < count adult-gangsters with [gang = gang] [
     set distrust distrust + 1
   ]
-  
+  ;Starts a vote for a new leader if the distrust for a gangster is higher than the gang member count
   if (distrust >= count adult-gangsters with [gang = gang]) [
-    start-vote
+    start-vote gang
     set distrust distrust - 10
   ]
 
@@ -136,8 +138,23 @@ to adult-gangster-idle
       set next-task [-> adult-gangster-work]
     ]
     
-    
   ]
+  
+  if (time >= 950) or (time <= 299) [
+    if (night-time = 0 ) [
+  let rand random 4
+      ifelse( rand = 0) [
+        set night-time 1
+        set next-task [ -> adult-gangster-idle]][
+      set night-time 1
+     set next-task [ -> adult-gangster-go-home]
+    ]
+  ]
+  ]
+    
+    if ((time >= 300) and (time <= 949)) and (night-time = 1 ) [
+    set night-time 0
+    ] 
   ; <------------------------------------------ astronomical-day-state = "day" doesnt work  old code ---- ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]
   
 end
@@ -153,7 +170,10 @@ to adult-gangster-go-home
   [set heading towardsxy array:item homexy 0 array:item homexy 1
     forward 0.25
   ]
-  set next-task [ -> adult-gangster-idle]
+  ifelse (time = 300) [
+    set next-task [ -> adult-gangster-idle]
+  set night-time 0][
+    set next-task [ -> adult-gangster-go-home]]
 end
 
 
@@ -251,11 +271,44 @@ to drug-order
 end
 
 ;Kick the leader? Not a state
-to start-vote 
+to start-vote [gang-color]
   let totalDistrust 0
+  let gc gang-color
+  let gang-members count adult-gangsters with [gang = gc]
   
-  ask adult-gangsters with [gang = gang] [
+  ;Get the total distrust of all the gang members
+  ask adult-gangsters with [gang = gc] [
     set totalDistrust totalDistrust + distrust
+  ]
+  ; Assign a new leader if the majority of the gang has a high distrust rate
+  if (totalDistrust >= (gang-members ^ 2) / 2) [
+    ask adult-gangsters with [gang = gc and leader? = true] [
+     set leader? false
+     set size 2
+     set status 0 
+     assign-leader gc
+    ]
+  ] 
+  
+end
+
+; Assign the gangster with the highest status as the new gang leader
+to assign-leader [gang-color]
+  let gc gang-color 
+  let max-status 0
+  let new-leader 0
+  ; Reset distrust for all gang members and get member with highest status
+  ask adult-gangsters with [gang = gc] [
+   if status >= max-status [
+      set max-status status
+      set new-leader self
+      set distrust 0
+    ] 
+  ]
+  ; Assign new leader
+  ask new-leader [
+    set leader? true
+    set size 3 
   ]
   
 end
