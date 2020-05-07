@@ -14,6 +14,7 @@ police-own [
   dayShift?
   shift
   status
+  preferences
 ]
 
 to setup-police
@@ -27,6 +28,7 @@ to setup-police
     set follow-tick -1
     set shift number-of-police
     set homeAdress one-of houses
+    set preferences ["searchPerson" "searchPlace" "helpPolice" "followChild"]
     setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
@@ -37,8 +39,9 @@ to setup-police
         set dayShift? false
       ]
       set shift shift - 1
-    ]
+    ]  
   ]
+ 
   
 end
 
