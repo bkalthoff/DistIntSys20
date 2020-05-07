@@ -101,13 +101,13 @@ to setup
 end
 
 to setup-territories ; create living-areas
-  set lowerclass patches with [pxcor >= -16 and pxcor < -4 and pycor > 4 and pycor <= 16]
+  set lowerclass patches with [pxcor >= -16 and pxcor < -1 and pycor > 1 and pycor <= 16]
   ask lowerclass [ set pcolor brown ]
-  set middleclass patches with [pxcor > 4 and pxcor <= 16 and pycor > 4 and pycor <= 16]
+  set middleclass patches with [pxcor > 1 and pxcor <= 16 and pycor > 1 and pycor <= 16]
   ask middleclass [ set pcolor red ]
-  set upperclass patches with [pxcor > 4 and pxcor <= 16 and pycor < -4 and pycor >= -16]
+  set upperclass patches with [pxcor > 1 and pxcor <= 16 and pycor < -1 and pycor >= -16]
   ask upperclass [ set pcolor blue ]
-  set prison patches with [pxcor >= -16 and pxcor < -4 and pycor < -4 and pycor >= -16]
+  set prison patches with [pxcor >= -16 and pxcor < -8 and pycor < -8 and pycor >= -16]
   ask prison [ set pcolor grey ]
 end
 
@@ -382,7 +382,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-1.0
+7.0
 1
 1
 NIL
@@ -397,7 +397,7 @@ number-of-police
 number-of-police
 0
 50
-3.0
+9.0
 1
 1
 NIL
@@ -487,7 +487,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-2.0
+3.0
 1
 1
 NIL
