@@ -90,7 +90,7 @@ to move-police
         set followedByPolice? true
       ]
       set person-to-follow target
-      set chance-of-finding-gangster 2
+      set chance-of-finding-gangster 1
       set next-task [ -> police-follow-child-gangster ]
     ]
   ]
@@ -200,7 +200,7 @@ to police-follow-child-gangster
   ]
   [
       
-    ifelse chance-of-finding-gangster = 0 and [carriesDrug?] of person-to-follow = true [        
+    ifelse chance-of-finding-gangster = 1 and [carriesDrug?] of person-to-follow = true [        
              
         set next-task [ -> police-investigate ] 
        
