@@ -15,8 +15,8 @@ police-own [
   shift
   status
   
+  list-of-known-hideouts
   list-of-known-gangsters
-  gangster-to-investigate
   chance-of-finding-gangster
   
 ]
@@ -33,6 +33,7 @@ to setup-police
     set shift number-of-police
     set homeAdress one-of houses
     set list-of-known-gangsters []
+    set list-of-known-hideouts[]
     setxy [ xcor ] of homeAdress [ ycor ] of homeAdress
     setxy random-xcor random abs 11
     set next-task [ -> move-police ]
@@ -171,6 +172,11 @@ to search-place
     set drugs 0
     set color orange 
     ]
+    ask police [
+      set list-of-known-hideouts lput hideout-to-search list-of-known-hideouts
+      set list-of-known-hideouts remove-duplicates list-of-known-hideouts
+    show list-of-known-hideouts
+    ]
   ][
     let stash-houses-to-search stash-houses-here
     if [drugs] of (one-of stash-houses-to-search) > 0 or [weapons]  of (one-of stash-houses-to-search) > 0
@@ -243,7 +249,7 @@ to police-investigate
       ask one-of police [
         set list-of-known-gangsters lput temp-adult list-of-known-gangsters
         set list-of-known-gangsters remove-duplicates list-of-known-gangsters
-        show list-of-known-gangsters
+       ; show list-of-known-gangsters
       ]
     ]
   ]

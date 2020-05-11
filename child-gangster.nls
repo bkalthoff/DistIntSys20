@@ -19,7 +19,6 @@ child-gangsters-own [
   randomGreyPatch
   stoppedByPolice
   
-  sick?
   followedByPolice?
   skipAttempt?
   carriesDrug?
@@ -52,7 +51,6 @@ to setup-agent-child-gangster
     set leavingOffset random 25
     set speed 0.25
     set next-task [ -> child-gangster-at-home ]
-    set sick? false
   ]
 end
 
@@ -64,12 +62,7 @@ to child-gangster-walk-around
   let temp-child-gangster self
   let temp-child-to-recruit one-of children with [recruitAttempt? = false] in-radius 2
   
-  get-sick
   
-  ifelse(sick? = true)[
-    set next-task [-> child-gangster-go-home]
-    
-  ][
   ifelse(slinging? = true)[
     set next-task [-> child-gangster-go-to-stash-house]
   ]
@@ -97,7 +90,9 @@ to child-gangster-walk-around
   ]  
 
   ]
-  ]
+
+
+
 end
 
 to set-next-task [next]
@@ -106,9 +101,13 @@ to set-next-task [next]
 end
 
 
+
+
 to child-gangster-at-home
+  
   if (time + leavingOffset = 800)[
     set hidden? false
+    
     set next-task[-> child-gangster-walk-around]
   ]
   
@@ -119,7 +118,7 @@ to child-gangster-at-home
     set skipAttempt? false
     set next-task[-> child-gangster-go-to-school]
   ]
-  get-sick
+  
 end
 
 
@@ -205,6 +204,9 @@ end
 
 
 
+
+
+
 to child-gangster-go-to-stash-house
   face stash-houseAdress
   forward 0.25
@@ -227,6 +229,7 @@ to child-gangster-transport-drugs
     set carriesDrug? false
     set slinging? false
     
+    
     let tempHideOutAdress hideoutAdress
     ask adult-gangster-order [
       set pickup-place tempHideOutAdress
@@ -243,20 +246,4 @@ to recieve-delivery-instructions
   set stash-houseAdress min-one-of stash-houses [distance myself]
   set next-task [-> child-gangster-go-to-stash-house]
   
-end
-
-to get-sick 
-  if sick? = true[
-    if(random 100 = 1)[
-    set sick? false
-    ;print (word  "child " who " got healthy.")
-    ]
-  ]
-  if sick? = false[
-  ifelse(random 300 = 1)
-  [set sick? true
-  ;print (word  "child " who " got sick.")
-  ]
-  [set sick? false]
-  ]
 end
