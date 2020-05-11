@@ -16,10 +16,6 @@ children-own [
   time-in-school
   sick?
   skip?
-  favourite-playground
-  playground-destination
-  playing?
-  looking-to-play?
 ]
 
 
@@ -44,10 +40,6 @@ to setup-child
     set time-in-school 0
     set sick? false
     set skip? false
-    set favourite-playground one-of playgrounds
-    set favourite-playground favourite-playground
-    set playing? false
-    set looking-to-play? false
   ]
 end
 
@@ -107,41 +99,14 @@ to child-go-home
 end
 
 to child-out-playing
-  set looking-to-play? true
-  ifelse playing? = true [
-    ifelse [distance playground-destination] of self > 2 [
-      face playground-destination
-    ]
-    [
-      set directionOffset random 100 + random -100
-      set heading heading + directionOffset
-    ]
-    forward 0.25
-    
-  ]
-  [
-    let children-to-play count (children with [ looking-to-play? = true and playing? = false ])
-    ifelse children-to-play > 4  [
-      let playground-vote[]
-      ask n-of children-to-play (children with [ looking-to-play? = true and playing? = false ]) [
-        set playground-vote lput favourite-playground playground-vote
-      ]
-      let playground-to-play modes playground-vote
-      ask n-of children-to-play (children with [ looking-to-play? = true and playing? = false ]) [
-        set playground-destination item 0 playground-to-play
-        set playing? true
-      ]
-    ]
-    [
-      set directionOffset random 100 + random -100
-      set heading heading + directionOffset
-      forward 0.25
-    ]
-  ]
+  
+  set directionOffset random 100 + random -100
+  set heading heading + directionOffset
+  forward 0.25
+  
+  
   if (time + leavingOffset > 1000 or time + leavingOffset < 200)[
     set next-task [-> child-go-home]
-    set looking-to-play? false
-    set playing? false
   ]
 end
 

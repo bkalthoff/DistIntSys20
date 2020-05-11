@@ -19,7 +19,6 @@ __includes [
   "hideout.nls"
   "stash-house.nls"
   "school.nls"
-  "playgrounds.nls"
 ]
 
 
@@ -39,7 +38,6 @@ breed [ houses house ]
 breed [ schools school ]
 breed [ stash-houses stash-house]
 breed [hideouts hideout]
-breed [playgrounds playground]
 
 
 ; ********************end breed of turtles ********
@@ -88,7 +86,7 @@ to setup
   setup-houses
   setup-stash-houses
   setup-schools
-  setup-playgrounds
+
 
   setup-police
   setup-adult-Gangster
@@ -104,11 +102,11 @@ end
 
 to setup-territories ; create living-areas
   set lowerclass patches with [pxcor >= -16 and pxcor < -1 and pycor > 1 and pycor <= 16]
-  ask lowerclass [ set pcolor gray - 4 ]
+  ask lowerclass [ set pcolor brown ]
   set middleclass patches with [pxcor > 1 and pxcor <= 16 and pycor > 1 and pycor <= 16]
-  ask middleclass [ set pcolor gray + 1 ]
+  ask middleclass [ set pcolor red ]
   set upperclass patches with [pxcor > 1 and pxcor <= 16 and pycor < -1 and pycor >= -16]
-  ask upperclass [ set pcolor white - 1]
+  ask upperclass [ set pcolor blue ]
   set prison patches with [pxcor >= -16 and pxcor < -8 and pycor < -8 and pycor >= -16]
   ask prison [ set pcolor grey ]
 end
@@ -369,7 +367,7 @@ number-of-children
 number-of-children
 0
 40
-30.0
+2.0
 1
 1
 NIL
@@ -384,7 +382,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-3.0
+7.0
 1
 1
 NIL
@@ -399,7 +397,7 @@ number-of-police
 number-of-police
 0
 50
-2.0
+9.0
 1
 1
 NIL
@@ -414,7 +412,7 @@ number-of-adults
 number-of-adults
 0
 30
-2.0
+5.0
 1
 1
 NIL
@@ -489,22 +487,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-1.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-12
-526
-192
-559
-number-of-playgrounds
-number-of-playgrounds
-1
-5
-1.0
+3.0
 1
 1
 NIL
@@ -863,22 +846,6 @@ Polygon -10899396 true false 105 90 75 75 55 75 40 89 31 108 39 124 60 105 75 10
 Polygon -10899396 true false 132 85 134 64 107 51 108 17 150 2 192 18 192 52 169 65 172 87
 Polygon -10899396 true false 85 204 60 233 54 254 72 266 85 252 107 210
 Polygon -7500403 true true 119 75 179 75 209 101 224 135 220 225 175 261 128 261 81 224 74 135 88 99
-
-ufo side
-false
-0
-Polygon -1 true false 0 150 15 180 60 210 120 225 180 225 240 210 285 180 300 150 300 135 285 120 240 105 195 105 150 105 105 105 60 105 15 120 0 135
-Polygon -16777216 false false 105 105 60 105 15 120 0 135 0 150 15 180 60 210 120 225 180 225 240 210 285 180 300 150 300 135 285 120 240 105 210 105
-Polygon -7500403 true true 60 131 90 161 135 176 165 176 210 161 240 131 225 101 195 71 150 60 105 71 75 101
-Circle -16777216 false false 255 135 30
-Circle -16777216 false false 180 180 30
-Circle -16777216 false false 90 180 30
-Circle -16777216 false false 15 135 30
-Circle -7500403 true true 15 135 30
-Circle -7500403 true true 90 180 30
-Circle -7500403 true true 180 180 30
-Circle -7500403 true true 255 135 30
-Polygon -16777216 false false 150 59 105 70 75 100 60 130 90 160 135 175 165 175 210 160 240 130 225 100 195 70
 
 wheel
 false
