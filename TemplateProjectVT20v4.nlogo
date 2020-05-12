@@ -197,7 +197,9 @@ end
 
 
 
-
+; Reports true or false with a probability of 'slider-value'.
+;
+; slider-value (input): A slider value from 0 to 100, representing the probability in percentage.
 to-report process-probability [ slider-value ]
   let p false
   if random 100 >= (100 - slider-value) [
