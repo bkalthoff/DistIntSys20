@@ -109,27 +109,11 @@ to adults-work
       adults-losing-job self
       set dest [ -> adults-go-home ]
       set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
-  ]
-  
-  [
-    ;get payed
-    ;rotate
-  ]
-end
-
-to adults-walk [destx desty]
-  set state "walk"
-  ifelse distancexy destx desty <= 1[
-    set next-task dest
-  ]
-  [
-    adults-move-turtle-pos self destx desty
-  ]
-  
-  time = 850 [
-    adults-earn-money self salary ; Gives agent salary at the end of the day
-    set dest [ -> adults-go-home ]
-    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+    ]
+    time = 850 [
+      adults-earn-money self salary ; Gives agent salary at the end of the day
+      set dest [ -> adults-go-home ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ])
 end
 
