@@ -78,7 +78,7 @@ to adults-go-home
     set next-task [-> adults-stopped-by-police]
   ] [
     ifelse job? = true [
-      ifelse time = 450 [
+      ifelse time = 450 and sick? = false [
         set dest [ -> adults-work ]
         set next-task [ -> adults-walk 1 8 ]
       ] [
