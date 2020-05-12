@@ -11,7 +11,7 @@ adult-gangsters-own [
   isCarryingDrugs
   gangster-hideout
   homexy array
-  
+  drugPrice
   gangMembers
   gang
   

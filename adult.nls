@@ -12,7 +12,7 @@ adults-own [
   hasDrugs?
   arrested-time
   orderedDrugs?
-  
+  priceLimitDrugs
   inPrison?
   pickUpPlace
   drugsDelivered?
@@ -153,12 +153,16 @@ to adults-consuming-drugs
 ;  ifelse any? adult-gangsters with [isWorking? = true ] [
   ifelse (orderedDrugs? = false)
   [
+    set priceLimitDrugs random 10
     set orderedDrugs? true
     ;order the drugs
     ask one-of adult-gangsters [ 
-    
+      ifelse ( [priceLimitDrugs] of myself > drugPrice)[
+        print "drugOrder"
       set drugOrders lput myself drugOrders
       show drugOrders
+      ] [
+      if ([priceLimitDrugs] of myself - drugPrice) <= 2)]
       
     ]
     set dest [-> adults-go-home]

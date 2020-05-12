@@ -133,7 +133,7 @@ to police-go-to-jail
   [
     set ImOccupied 0
     set status status + 1 
-    print self print status
+   
     set next-task [ -> move-police]
   ]
 end
