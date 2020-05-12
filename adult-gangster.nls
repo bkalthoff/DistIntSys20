@@ -2,6 +2,7 @@ adult-gangsters-own [
   role
   age
   status
+  money
   hometerritory
   home-id
   next-task
@@ -14,10 +15,18 @@ adult-gangsters-own [
   gangMembers
   gang
   
+  
+  adult-current-customer
   pickup-place
   drugOrders
   isWorking?
-  drugsDelivered?
+  adult-gangster-drugs-delivered?
+ ;Maybe change name later, increase when delivered drugs, decrease when gangster goes to jail?
+  status
+  leader?
+  ;Distrust against gang leader
+  distrust
+  night-time 
 ]
 
 ; the set up needs to implement the new terretories, 
@@ -25,13 +34,42 @@ to setup-adult-Gangster
   
   let Q number-of-adultGangster 
   ask n-of Q lowerclass
-  [sprout-adult-gangsters 1 [ set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2] set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown ]]
+  [sprout-adult-gangsters 1 [ 
+    set size 2 
+    set shape "person" 
+    ifelse random 100 < 49 [set gang red set color red + 2] 
+    [
+      set gang blue set color blue + 2
+    ] 
+    set next-task [ -> adult-gangster-idle]] 
+    sprout-gangster-homes 1 [set shape "house" set color brown ]
+  ]
   
   ask n-of Q middleclass
   
-  [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]] sprout-gangster-homes 1 [set shape "house" set color brown]]
+  [sprout-adult-gangsters 1 [
+    set size 2 
+    set shape "person" 
+    ifelse random 100 < 49 [set gang red set color red + 2] 
+    [
+      set gang blue set color blue + 2
+    ]  
+    set next-task [ -> adult-gangster-idle]] 
+    sprout-gangster-homes 1 [set shape "house" set color brown]
+  ]
+  
   ask n-of Q upperclass
-    [sprout-adult-gangsters 1 [set size 2 set shape "person" ifelse random 100 < 49 [set gang red set color red + 2] [set gang blue set color blue + 2]  set next-task [ -> adult-gangster-idle]     ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
+  
+  [sprout-adult-gangsters 1 [
+    set size 2    
+    set shape "person" 
+    ifelse random 100 < 49 [set gang red set color red + 2] 
+    [
+      set gang blue set color blue + 2
+    ]  
+    set next-task [ -> adult-gangster-idle]
+  ]sprout-gangster-homes 1 [  set shape "house" set color brown]  ]
+  
   
   ask adult-gangsters [ 
     set homexy array:from-list n-values 2 [0]
@@ -43,8 +81,19 @@ to setup-adult-Gangster
     
     set isWorking? false
     set drugOrders[]
+    set night-time 0
     
     ;print self print gangMembers
+  ]
+
+  ask one-of adult-gangsters with [gang = red] [
+      set leader? true
+      set size 3
+  ]
+  
+  ask one-of adult-gangsters with [gang = blue] [
+      set leader? true
+      set size 3
   ]
   
 end
@@ -72,6 +121,16 @@ end
 ; has been "activated" 
 ;
 to adult-gangster-idle
+  ;Dummy code to test distrust variable, should be called when a member in the gang gets put in prison
+  if random 50 = 0 and distrust < count adult-gangsters with [gang = gang] [
+    set distrust distrust + 1
+  ]
+  ;Starts a vote for a new leader if the distrust for a gangster is higher than the gang member count
+  if (distrust >= count adult-gangsters with [gang = gang]) [
+    start-vote gang
+    set distrust distrust - 10
+  ]
+
   ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
                                                                                       ;set hidden? false                                                ; for demo purpose
     let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
@@ -79,8 +138,23 @@ to adult-gangster-idle
       set next-task [-> adult-gangster-work]
     ]
     
-    
   ]
+  
+  if (time >= 950) or (time <= 299) [
+    if (night-time = 0 ) [
+  let rand random 4
+      ifelse( rand = 0) [
+        set night-time 1
+        set next-task [ -> adult-gangster-idle]][
+      set night-time 1
+     set next-task [ -> adult-gangster-go-home]
+    ]
+  ]
+  ]
+    
+    if ((time >= 300) and (time <= 949)) and (night-time = 1 ) [
+    set night-time 0
+    ] 
   ; <------------------------------------------ astronomical-day-state = "day" doesnt work  old code ---- ifelse astronomical-day-state = "day" [set next-task [-> adult-gangster-work]
   
 end
@@ -96,7 +170,10 @@ to adult-gangster-go-home
   [set heading towardsxy array:item homexy 0 array:item homexy 1
     forward 0.25
   ]
-  set next-task [ -> adult-gangster-idle]
+  ifelse (time = 300) [
+    set next-task [ -> adult-gangster-idle]
+  set night-time 0][
+    set next-task [ -> adult-gangster-go-home]]
 end
 
 
@@ -150,16 +227,21 @@ to adult-gangster-work
     
   ]
   
-  if drugsDelivered? = true [
+  if adult-gangster-drugs-delivered? = true [
+    set status status + 5 + random 10
+    set label status
     set next-task [ -> confirm-delivery pickup-place]
   ]
 end
 
 to confirm-delivery [place-to-pickup]
-  ask first drugOrders[
+  ask adult-current-customer[
     set pickUpPlace place-to-pickup
     set drugsDelivered? true
   ]
+  
+  set adult-gangster-drugs-delivered? false
+  set next-task[-> adult-gangster-idle]
   
 end
 
@@ -167,22 +249,68 @@ to drug-order
   
   let closestHideout min-one-of other hideouts [distance myself]
   let childGangsterClose min-one-of other child-gangsters [distance myself]
-  let order first drugOrders
-  set drugOrders remove-item 0 drugOrders
-  if childGangsterClose != nobody and [slinging?] of childGangsterClose = false [  
+  set adult-current-customer first drugOrders
+  let gangster-order self 
+  if childGangsterClose != nobody and [slinging?] of childGangsterClose = false and [hidden?] of childGangsterClose = false [ 
+    
+    set drugOrders remove-item 0 drugOrders
+    
     ask childGangsterClose [
       set hideoutAdress closestHideout
-      set adult-reciever order
+      set adult-gangster-order gangster-order
       set slinging? true
       set next-task [-> recieve-delivery-instructions]   ;  Ersätt med att ge delivery instructions
     ]
-
+    
   ]  
   ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
   ;show drugOrders
   set size 1
   set stoppedByAdult "false"    
   set next-task [-> adult-gangster-idle]
+end
+
+;Kick the leader? Not a state
+to start-vote [gang-color]
+  let totalDistrust 0
+  let gc gang-color
+  let gang-members count adult-gangsters with [gang = gc]
+  
+  ;Get the total distrust of all the gang members
+  ask adult-gangsters with [gang = gc] [
+    set totalDistrust totalDistrust + distrust
+  ]
+  ; Assign a new leader if the majority of the gang has a high distrust rate
+  if (totalDistrust >= (gang-members ^ 2) / 2) [
+    ask adult-gangsters with [gang = gc and leader? = true] [
+     set leader? false
+     set size 2
+     set status 0 
+     assign-leader gc
+    ]
+  ] 
+  
+end
+
+; Assign the gangster with the highest status as the new gang leader
+to assign-leader [gang-color]
+  let gc gang-color 
+  let max-status 0
+  let new-leader 0
+  ; Reset distrust for all gang members and get member with highest status
+  ask adult-gangsters with [gang = gc] [
+   if status >= max-status [
+      set max-status status
+      set new-leader self
+      set distrust 0
+    ] 
+  ]
+  ; Assign new leader
+  ask new-leader [
+    set leader? true
+    set size 3 
+  ]
+  
 end
 
 

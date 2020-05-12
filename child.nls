@@ -13,6 +13,13 @@ children-own [
   recruiter
   previous-task
   stoppedByPolice
+  time-in-school
+  sick?
+  skip?
+  favourite-playground
+  playground-destination
+  playing?
+  looking-to-play?
 ]
 
 
@@ -30,26 +37,37 @@ to setup-child
     set color white
     set hidden? true
     set recruitAttempt? false
-    set leavingOffset random 25
+    set leavingOffset random 100
     set speed 0.25
     set tickStandStill 0
     set next-task [ -> child-at-home ]
-    
+    set time-in-school 0
+    set sick? false
+    set skip? false
+    set favourite-playground one-of playgrounds
+    set favourite-playground favourite-playground
+    set playing? false
+    set looking-to-play? false
   ]
 end
 
 to child-at-home
-  
-  if (time + leavingOffset = 800)[
+  if (time + leavingOffset = 800 and not sick?)[
     set hidden? false
     set recruitAttempt? false
     set next-task[-> child-out-playing]
   ]
   
-  if (time + leavingOffset = 200)[
-    set hidden? false
-    set recruitAttempt? false
-    set next-task[-> child-go-to-school]
+  if (time + leavingOffset = 200) [
+    child-skip-or-sick
+    ifelse skip?
+      [set next-task[-> child-out-playing]]
+      [ifelse not sick? [
+        set hidden? false
+        set recruitAttempt? false
+        set next-task[-> child-go-to-school]]
+        [set next-task[-> child-go-home]]
+      ]
   ]
 end
 
@@ -68,6 +86,7 @@ end
 
 
 to child-in-school
+  set time-in-school time-in-school + 1
   if (time + leavingOffset = 600)[
     set hidden? false
     set recruitAttempt? false
@@ -88,14 +107,41 @@ to child-go-home
 end
 
 to child-out-playing
-  
-  set directionOffset random 100 + random -100
-  set heading heading + directionOffset
-  forward 0.25
-  
-  
+  set looking-to-play? true
+  ifelse playing? = true [
+    ifelse [distance playground-destination] of self > 2 [
+      face playground-destination
+    ]
+    [
+      set directionOffset random 100 + random -100
+      set heading heading + directionOffset
+    ]
+    forward 0.25
+    
+  ]
+  [
+    let children-to-play count (children with [ looking-to-play? = true and playing? = false ])
+    ifelse children-to-play > 4  [
+      let playground-vote[]
+      ask n-of children-to-play (children with [ looking-to-play? = true and playing? = false ]) [
+        set playground-vote lput favourite-playground playground-vote
+      ]
+      let playground-to-play modes playground-vote
+      ask n-of children-to-play (children with [ looking-to-play? = true and playing? = false ]) [
+        set playground-destination item 0 playground-to-play
+        set playing? true
+      ]
+    ]
+    [
+      set directionOffset random 100 + random -100
+      set heading heading + directionOffset
+      forward 0.25
+    ]
+  ]
   if (time + leavingOffset > 1000 or time + leavingOffset < 200)[
     set next-task [-> child-go-home]
+    set looking-to-play? false
+    set playing? false
   ]
 end
 
@@ -114,7 +160,19 @@ to child-turn-to-child-gangster
   ]
 end
 
-
+to child-skip-or-sick
+  set sick? false
+  set skip? false
+  let rand random 10
+  (ifelse
+    rand = 0
+      [set sick? true]
+    rand = 1
+      [set skip? true
+       set hidden? false]
+    []
+  )
+end
 
 
 
