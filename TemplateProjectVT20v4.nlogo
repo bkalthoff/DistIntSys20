@@ -208,6 +208,15 @@ to-report process-probability [ slider-value ]
   report p
 end
 
+; Reports a TRIST-value based on the number of gangsters in prison divided by the total number of gangsters
+to-report trist-value
+  let trist 0
+  let gangsters-in-prison 0
+  let total-gangsters count adult-gangsters + count child-gangsters
+  set trist gangsters-in-prison / total-gangsters
+  report trist
+end
+
 ; **************************
 
 
