@@ -18,6 +18,11 @@ adults-own [
   drugsDelivered?
   
   numberOfConvictions
+  
+  turn-to-negotiate
+  done-negotiating?
+  offered-money
+  police-ID
 ]
 
 to setup-adults
@@ -44,6 +49,8 @@ to setup-adults
     set inPrison? false
     set drugsDelivered? false
     set numberOfConvictions 0
+    set turn-to-negotiate 1
+    set done-negotiating? false
   ]
 end
 
@@ -93,13 +100,14 @@ to adults-go-home
 end
 
 to adults-work
+  set money money + 1
   set state "work"
   ifelse (random 500 = 0)
   [
     set dest [-> adults-go-home]
     set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
   ]
-
+  
   [
     ;get payed
     ;rotate
@@ -107,56 +115,56 @@ to adults-work
 end
 
 to adults-walk [destx desty]
-    set state "walk"
+  set state "walk"
   ifelse distancexy destx desty <= 1[
-      set next-task dest
+    set next-task dest
   ]
-    [
-       adults-move-turtle-pos self destx desty
-    ]
-
+  [
+    adults-move-turtle-pos self destx desty
+  ]
+  
 end
 
 to adults-losing-job
 end
 
 to adults-moving [area]
-
-    if area = 1[
-      array:set homexy 0 11
-      array:set homexy 1 -11
-
-      set next-task[-> adults-go-home]
-
+  
+  if area = 1[
+    array:set homexy 0 11
+    array:set homexy 1 -11
+    
+    set next-task[-> adults-go-home]
+    
   ]
-
-    if area = 2[ ;;middleclass
-      array:set homexy 0 11
-      array:set homexy 1 11
-
-      set next-task[-> adults-go-home]
-
+  
+  if area = 2[ ;;middleclass
+    array:set homexy 0 11
+    array:set homexy 1 11
+    
+    set next-task[-> adults-go-home]
+    
   ]
-
-    if area = 3[ ;;lowerclass
-      array:set homexy 0 -11
-      array:set homexy 1 11
-
-      set next-task[-> adults-go-home]
+  
+  if area = 3[ ;;lowerclass
+    array:set homexy 0 -11
+    array:set homexy 1 11
+    
+    set next-task[-> adults-go-home]
   ]
-
+  
 end
 
 to adults-consuming-drugs
   set state "Consuming-drugs"
   
-;  ifelse any? adult-gangsters with [isWorking? = true ] [
+  ;  ifelse any? adult-gangsters with [isWorking? = true ] [
   ifelse (orderedDrugs? = false)
   [
     set orderedDrugs? true
     ;order the drugs
     ask one-of adult-gangsters [ 
-    
+      
       set drugOrders lput myself drugOrders
       show drugOrders
       
@@ -164,7 +172,7 @@ to adults-consuming-drugs
     set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
-
+  
   
   [
     
@@ -179,16 +187,16 @@ to adults-consuming-drugs
     ;remove this once the children have been implemented
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ]
- ; [ set next-task [-> adults-walk array:item homexy 0 array:item homexy 1 ]]
- 
-
+  ; [ set next-task [-> adults-walk array:item homexy 0 array:item homexy 1 ]]
+  
+  
   
 end
 
 to fetch-drugs
-    ifelse distance pickUpPlace > 1 [
-      face pickUpPlace
-      forward 0.5
+  ifelse distance pickUpPlace > 1 [
+    face pickUpPlace
+    forward 0.5
   ]
   [
     set hasDrugs? true
@@ -209,28 +217,47 @@ to adults-spend-money
 end
 
 to adults-move-turtle-pos [source destx desty]
-
+  
   ask source [
     if distancexy destx desty > 1 [
       facexy destx desty
       forward 0.5
     ]
   ]
-
+  
 end
-
 
 
 to adults-stopped-by-police
   set state "stopped"
+  if hasDrugs? = false [
+    set done-negotiating? true
+  ]
+  if [search-tick] of police-ID >= 10 [
+    
+    if done-negotiating? = false [
+      if turn-to-negotiate = 1 [
+        set offered-money money / 2
+        set turn-to-negotiate turn-to-negotiate + 1
+      ]
+      if turn-to-negotiate = 3 [
+        set offered-money money
+        set turn-to-negotiate turn-to-negotiate + 1
+      ]
+      
+    ]
+  ]
   if stoppedByPolice? = false [
+    set done-negotiating? false
     set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
   if arrested-time != -1 [
+    set done-negotiating? false
     set next-task [ -> adults-go-to-jail ]
     set state "jail"
   ]
+  
 end
 
 
@@ -249,7 +276,7 @@ to adults-go-to-jail
     
   ]
   
-
+  
 end
 
 ;
@@ -260,24 +287,24 @@ end
 ;
 to adult-in-prison
   
-    
-    ifelse ticks - arrested-time = 500 * numberOfConvictions [
-      set arrested-time -1
-      set color white
-      set stoppedByPolice? false
-      set dest [-> adults-go-home]
-      set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
-    
-    ][
   
+  ifelse ticks - arrested-time = 500 * numberOfConvictions [
+    set arrested-time -1
+    set color white
+    set stoppedByPolice? false
+    set dest [-> adults-go-home]
+    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    
+  ][
+    
     ifelse [pcolor] of patch-ahead 0.5 = grey[
-       right random 45
-       left random 45
-       forward 0.5
-      ][
+      right random 45
+      left random 45
+      forward 0.5
+    ][
       right 180      
-       forward 0.5
-     ]
+      forward 0.5
+    ]
   ]
   
 end
