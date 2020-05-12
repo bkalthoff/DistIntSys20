@@ -384,7 +384,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-3.0
+35.0
 1
 1
 NIL
@@ -399,7 +399,7 @@ number-of-police
 number-of-police
 0
 50
-2.0
+46.0
 1
 1
 NIL
@@ -414,7 +414,7 @@ number-of-adults
 number-of-adults
 0
 30
-2.0
+30.0
 1
 1
 NIL
@@ -509,6 +509,26 @@ number-of-playgrounds
 1
 NIL
 HORIZONTAL
+
+PLOT
+302
+217
+502
+367
+Count turtles
+NIL
+NIL
+0.0
+30.0
+0.0
+30.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count adults"
+"pen-1" 1.0 0 -13345367 true "" "plot count adult-gangsters with [color = blue + 2]"
+"pen-2" 1.0 0 -2674135 true "" "plot count adult-gangsters with [color = red + 2 ]"
 
 @#$#@#$#@
 ## WHAT IS IT?
