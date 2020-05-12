@@ -198,7 +198,13 @@ end
 
 
 
-
+to-report process-probability [ slider-value ]
+  let p false
+  if random 100 >= (100 - slider-value) [
+    set p true
+  ]
+  report p
+end
 
 ; **************************
 
@@ -238,10 +244,10 @@ to save-recording
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-530
-32
-1255
-758
+529
+10
+1254
+736
 -1
 -1
 21.73
@@ -283,9 +289,9 @@ NIL
 
 BUTTON
 156
-641
+642
 268
-674
+675
 reset-recorder
 reset-recorder
 NIL
@@ -327,11 +333,11 @@ NIL
 1
 
 BUTTON
-17
-23
-80
-56
-NIL
+9
+10
+73
+43
+Setup
 setup
 NIL
 1
@@ -344,11 +350,11 @@ NIL
 1
 
 BUTTON
-93
-25
-156
-58
-NIL
+81
+10
+144
+43
+Go
 go
 T
 1
@@ -361,40 +367,40 @@ NIL
 0
 
 SLIDER
-21
-82
-193
-115
+9
+52
+181
+85
 number-of-children
 number-of-children
 0
 40
-30.0
+10.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-15
-268
-205
-301
+9
+181
+199
+214
 number-of-adultGangster
 number-of-adultGangster
 0
 50
-3.0
+6.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-13
-173
-185
-206
+9
+138
+181
+171
 number-of-police
 number-of-police
 0
@@ -406,25 +412,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-14
-129
-186
-162
+9
+95
+181
+128
 number-of-adults
 number-of-adults
 0
 30
-2.0
+6.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-12
-396
-184
-429
+9
+310
+181
+343
 number-of-stash-houses
 number-of-stash-houses
 1
@@ -436,40 +442,40 @@ NIL
 HORIZONTAL
 
 SLIDER
-11
-440
-183
-473
-number-of-houses
-number-of-houses
-1
-5
-2.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-12
-485
-184
-518
-number-of-hideouts
-number-of-hideouts
-1
-5
-2.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-17
+9
 353
-189
+181
 386
+number-of-houses
+number-of-houses
+1
+5
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+9
+396
+181
+429
+number-of-hideouts
+number-of-hideouts
+1
+5
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+9
+267
+181
+300
 number-of-schools
 number-of-schools
 1
@@ -481,19 +487,71 @@ NIL
 HORIZONTAL
 
 SLIDER
-10
-309
-206
-342
+9
+224
+205
+257
 number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-1.0
+12.0
 1
 1
 NIL
 HORIZONTAL
+
+SLIDER
+299
+140
+472
+173
+sickness-probability
+sickness-probability
+0
+100
+15.0
+1
+1
+%
+HORIZONTAL
+
+MONITOR
+299
+173
+433
+218
+Sick adults
+count adults with [ sick? = true ]
+0
+1
+11
+
+SLIDER
+299
+52
+471
+85
+job-opportunities
+job-opportunities
+0
+100
+5.0
+1
+1
+%
+HORIZONTAL
+
+MONITOR
+299
+85
+454
+130
+Unemployed adults
+count adults with [ job? = false ]
+17
+1
+11
 
 SLIDER
 12
@@ -741,6 +799,42 @@ Polygon -7500403 true true 105 90 120 195 90 285 105 300 135 300 150 225 165 300
 Rectangle -7500403 true true 127 79 172 94
 Polygon -7500403 true true 195 90 240 150 225 180 165 105
 Polygon -7500403 true true 105 90 60 150 75 180 135 105
+
+person business
+false
+0
+Rectangle -1 true false 120 90 180 180
+Polygon -13345367 true false 135 90 150 105 135 180 150 195 165 180 150 105 165 90
+Polygon -7500403 true true 120 90 105 90 60 195 90 210 116 154 120 195 90 285 105 300 135 300 150 225 165 300 195 300 210 285 180 195 183 153 210 210 240 195 195 90 180 90 150 165
+Circle -7500403 true true 110 5 80
+Rectangle -7500403 true true 127 76 172 91
+Line -16777216 false 172 90 161 94
+Line -16777216 false 128 90 139 94
+Polygon -13345367 true false 195 225 195 300 270 270 270 195
+Rectangle -13791810 true false 180 225 195 300
+Polygon -14835848 true false 180 226 195 226 270 196 255 196
+Polygon -13345367 true false 209 202 209 216 244 202 243 188
+Line -16777216 false 180 90 150 165
+Line -16777216 false 120 90 150 165
+
+person doctor
+false
+0
+Polygon -7500403 true true 105 90 120 195 90 285 105 300 135 300 150 225 165 300 195 300 210 285 180 195 195 90
+Polygon -13345367 true false 135 90 150 105 135 135 150 150 165 135 150 105 165 90
+Polygon -7500403 true true 105 90 60 195 90 210 135 105
+Polygon -7500403 true true 195 90 240 195 210 210 165 105
+Circle -7500403 true true 110 5 80
+Rectangle -7500403 true true 127 79 172 94
+Polygon -1 true false 105 90 60 195 90 210 114 156 120 195 90 270 210 270 180 195 186 155 210 210 240 195 195 90 165 90 150 150 135 90
+Line -16777216 false 150 148 150 270
+Line -16777216 false 196 90 151 149
+Line -16777216 false 104 90 149 149
+Circle -1 true false 180 0 30
+Line -16777216 false 180 15 120 15
+Line -16777216 false 150 195 165 195
+Line -16777216 false 150 240 165 240
+Line -16777216 false 150 150 165 150
 
 person police
 false
