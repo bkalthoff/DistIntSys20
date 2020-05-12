@@ -68,12 +68,12 @@ to move-police
         ]
       ]
       [
-        right random 45
-        left random 45
+        
       ]
     ]
   ]
-  
+  right random 45
+  left random 45
   forward 0.5
   
   ifelse any? (adults-here with [ stoppedByPolice? = false and state != "work" ]) [

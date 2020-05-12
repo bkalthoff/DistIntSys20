@@ -243,6 +243,7 @@ to adults-go-to-jail
     forward 0.5
   ] [
     forward 2
+    set inPrison? true
     set next-task[-> adult-in-prison]
   ]
 end
@@ -252,6 +253,7 @@ end
 ; if the adult has not served its time then as of right now 
 ; it will only walk around in the prison never walking outside of the grey area. 
 to adult-in-prison
+<<<<<<< HEAD
     ifelse ticks - arrested-time = 500 * numberOfConvictions [
       set arrested-time -1
       set color white
@@ -268,6 +270,55 @@ to adult-in-prison
        right 180      
        forward 0.5
      ]
+=======
+  
+  
+  ifelse ticks - arrested-time = 500 * numberOfConvictions [
+    set arrested-time -1
+    set color white
+    set stoppedByPolice? false
+    set inPrison? false
+    set dest [-> adults-go-home]
+    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    
+  ][
+    
+    ifelse [pcolor] of patch-ahead 0.5 = grey[
+      right random 45
+      left random 45
+      forward 0.5
+    ][
+      right 180      
+      forward 0.5
+    ]
+  ]
+  ask adults with [inPrison? = true][
+    let %t 0.2
+    let n count adults with [inPrison? = true]
+    ask (n-of(%t * n * numberOfConvictions) adults with [inPrison? = true]) [
+      set breed adult-gangsters
+      set size 2    
+      set shape "person" 
+      ifelse random 100 < 49 [set gang red set color red + 2] 
+      [
+        set gang blue set color blue + 2
+      ] 
+      
+      ask adult-gangsters [ 
+        set homexy array:from-list n-values 2 [0]
+        array:set homexy 0 xcor  array:set homexy 1 ycor   
+        set gangster-hideout min-one-of hideouts [distance myself]
+        ifelse gang = red
+        [setupGangmembers red]
+        [setupGangmembers blue]
+        
+        set isWorking? false
+        set drugOrders[]
+        set night-time 0
+        set next-task[-> adult-gangster-idle]
+      ]
+    ]
+>>>>>>> StefanBranch
   ]
   
 end

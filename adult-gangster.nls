@@ -27,6 +27,7 @@ adult-gangsters-own [
   ;Distrust against gang leader
   distrust
   night-time 
+  numberOfConvictions
 ]
 
 ; the set up needs to implement the new terretories, 
