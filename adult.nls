@@ -96,19 +96,17 @@ end
 
 to adults-work
   set state "work"
-  ifelse color = green [
-    adults-losing-job self
-    set dest [ -> adults-go-home ]
-    set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
-  ] [
-    ifelse time = 850 [
-      adults-earn-money self salary
+  (ifelse
+    color = green [
+      adults-losing-job self
       set dest [ -> adults-go-home ]
-      set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
-    ] [
-      ; ?
-    ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
+  time = 850 [
+    adults-earn-money self salary ; Gives agent salary at the end of the day
+    set dest [ -> adults-go-home ]
+    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+  ])
 end
 
 to adults-walk [ destx desty ]
@@ -120,6 +118,9 @@ to adults-walk [ destx desty ]
   ]
 end
 
+; Gives a job to given agent, and generates a semi-random salary based on 'homeArea'.
+;
+; agent (input): A turtle with a 'job?' and 'homeArea' variable.
 to adults-get-job [ agent ]
   ask agent [
     set job? true
@@ -129,6 +130,9 @@ to adults-get-job [ agent ]
   ]
 end
 
+; Fires a given agent from its job.
+;
+; agent (input): A turtle with a 'job?' variable.
 to adults-losing-job [ agent ]
   ask agent [
     set job? false
@@ -158,13 +162,11 @@ end
 to adults-consuming-drugs
   set state "Consuming-drugs"
   ifelse orderedDrugs? = false [
-    if money >= 50 [
-      adults-loose-money self 50
+    if money >= 50 [             ; Can agent afford?
+      adults-loose-money self 50 ; Pay for drugs
       set orderedDrugs? true
       ;order the drugs
-      ask one-of adult-gangsters with [ isWorking? = true ] [ 
-        set drugOrders lput myself drugOrders
-      ]
+      ask one-of adult-gangsters with [ isWorking? = true ] [ set drugOrders lput myself drugOrders ]
     ]
     set dest [ -> adults-go-home ]
     set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
@@ -175,9 +177,6 @@ to adults-consuming-drugs
       set dest [ -> adults-go-home ]
       set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
     ]
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;remove this once the children have been implemented
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ]  
 end
 
@@ -195,10 +194,20 @@ to fetch-drugs
   ]
 end
 
+; Increases the amount of money a given agent has.
+;
+; agent (input): A turtle with a 'money' variable.
+; amount (input): The amount the given turtle's 'money' should increase by.
 to adults-earn-money [ agent amount ]
   ask agent [ set money money + amount ]
 end
 
+; Decreases the amount of money a given agent has.
+; Does not prevent the total capital to reach negative numbers.
+; Relies on outside checks to prevent purchasing things the agent cannot afford.
+;
+; agent (input): A turtle with a 'money' variable.
+; amount (input): The amount the given turtle's 'money' should decrease by.
 to adults-loose-money [ agent amount ]
   ask agent [ set money money - amount ]
 end
