@@ -253,7 +253,7 @@ end
 ; it will only walk around in the prison never walking outside of the grey area. 
 to adult-in-prison
     ifelse ticks - arrested-time = 500 * numberOfConvictions [
-      set arrested-time - 1
+      set arrested-time -1
       set color white
       set stoppedByPolice? false
       adults-losing-job self
