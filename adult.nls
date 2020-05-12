@@ -3,8 +3,10 @@ adults-own [
   previous-task
   dest
   job?
+  sick?
   drugUser?
   money
+  salary
   homexy
   homeArea
   state
@@ -28,15 +30,14 @@ to setup-adults
     set size 2
     set next-task [ -> adults-go-home ]
     set money 100
-    set label homeArea
-    set label-color green
-    set job? one-of [true false]
+    set job? one-of [ true false ]
+    set salary 0
+    set sick? false
     ;set drugUser? one-of [true false]
     set drugUser? true
-    set homexy array:from-list n-values 2 [0]
+    set homexy array:from-list n-values 2 [ 0 ]
     set homeArea 1 + random 3
     adults-moving homeArea
-    
     set hasDrugs? false
     set stoppedByPolice? false
     set arrested-time -1
@@ -45,184 +46,186 @@ to setup-adults
     set drugsDelivered? false
     set numberOfConvictions 0
   ]
+  
+  ask adults [
+    if job? [
+      adults-get-job self
+    ]
+  ]
 end
 
 to adults-go-home
   set state "home"
-  ifelse(stoppedByPolice? = true)[
-    
-    set next-task [-> adults-stopped-by-police]
-    
-  ]
-  
-  [
-    
-    ifelse(job? = true)
-    [
-      
-      ifelse(ticks mod 500 = 0)
-      [
-        set dest [-> adults-work]
-        set next-task [-> adults-walk 1 8]
-      ]
-      
-      [
-        if(drugUser? = true) and (random 50 = 0) or (orderedDrugs? = true)
-        [
-          set next-task [ -> adults-consuming-drugs ]
-        ]
-        
+  if time = 0 [
+    ifelse process-probability sickness-probability [
+      set sick? true
+      set shape "person doctor"
+    ] [
+      set sick? false
+      ifelse job? [
+        set shape "person business"
+      ] [
+        set shape "person"
       ]
     ]
-    
-    [
+    if job? = false and process-probability job-opportunities [
+      adults-get-job self
+      set dest [ -> adults-go-home ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+    ]
+  ]
+  ifelse stoppedByPolice? = true [
+    set next-task [-> adults-stopped-by-police]
+  ] [
+    ifelse job? = true [
+      ifelse time = 450 [
+        set dest [ -> adults-work ]
+        set next-task [ -> adults-walk 1 8 ]
+      ] [
+        if drugUser? = true and process-probability 2 or orderedDrugs? = true [
+          set next-task [ -> adults-consuming-drugs ]
+        ]
+      ]
+    ] [
       forward 0.5
       right random 45
       left random 45
-      
-      if random 1000 = 0
-      [
-        set job? true
-        set dest [-> adults-go-home]
-        set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
-      ]
     ]
-    
   ]
-  
 end
 
 to adults-work
   set state "work"
-  ifelse (random 500 = 0)
-  [
-    set dest [-> adults-go-home]
-    set next-task [-> adults-walk array:item homexy 0 array:item homexy 1]
+  (ifelse
+    color = green [
+      adults-losing-job self
+      set dest [ -> adults-go-home ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
+  time = 850 [
+    adults-earn-money self salary ; Gives agent salary at the end of the day
+    set dest [ -> adults-go-home ]
+    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+  ])
+end
 
-  [
-    ;get payed
-    ;rotate
+to adults-walk [ destx desty ]
+  set state "walk"
+  ifelse distancexy destx desty <= 1 [
+    set next-task dest
+  ] [
+    adults-move-turtle-pos self destx desty
   ]
 end
 
-to adults-walk [destx desty]
-    set state "walk"
-  ifelse distancexy destx desty <= 1[
-      set next-task dest
+; Gives a job to given agent, and generates a semi-random salary based on 'homeArea'.
+;
+; agent (input): A turtle with a 'job?' and 'homeArea' variable.
+to adults-get-job [ agent ]
+  ask agent [
+    set job? true
+    set shape "person business"
+    set salary random 40 + (120 / (homeArea * 0.8)) ; Gives each adult a base salary based on homeArea,
+                                                    ; with a random chance to earn up to 40 more of our pretend currency.
   ]
-    [
-       adults-move-turtle-pos self destx desty
-    ]
-
 end
 
-to adults-losing-job
+; Fires a given agent from its job.
+;
+; agent (input): A turtle with a 'job?' variable.
+to adults-losing-job [ agent ]
+  ask agent [
+    set job? false
+    set shape "person"
+    set salary 0
+  ]
 end
 
-to adults-moving [area]
-
-    if area = 1[
-      array:set homexy 0 11
-      array:set homexy 1 -11
-
-      set next-task[-> adults-go-home]
-
+to adults-moving [ area ]
+  if area = 1 [
+    array:set homexy 0 11
+    array:set homexy 1 -11
   ]
-
-    if area = 2[ ;;middleclass
-      array:set homexy 0 11
-      array:set homexy 1 11
-
-      set next-task[-> adults-go-home]
-
+  if area = 2 [ ;;middleclass
+    array:set homexy 0 11
+    array:set homexy 1 11
   ]
-
-    if area = 3[ ;;lowerclass
-      array:set homexy 0 -11
-      array:set homexy 1 11
-
-      set next-task[-> adults-go-home]
+  if area = 3 [ ;;lowerclass
+    array:set homexy 0 -11
+    array:set homexy 1 11
   ]
-
+  set next-task [ -> adults-go-home ]
+  set label homeArea
+  set label-color green
 end
 
 to adults-consuming-drugs
   set state "Consuming-drugs"
-  
-  ifelse (orderedDrugs? = false)
-  [
-    set orderedDrugs? true
-    ;order the drugs
-    ask one-of adult-gangsters with[isWorking? = true ][ 
-    
-      set drugOrders lput myself drugOrders
-      
+  ifelse orderedDrugs? = false [
+    if money >= 50 [             ; Can agent afford?
+      adults-loose-money self 50 ; Pay for drugs
+      set orderedDrugs? true
+      ;order the drugs
+      ask one-of adult-gangsters with [ isWorking? = true ] [ set drugOrders lput myself drugOrders ]
     ]
-    set dest [-> adults-go-home]
-    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
-  ]
-
-  
-  [
-    
-    ifelse (drugsDelivered? = true)[
-      set next-task[-> fetch-drugs]
+    set dest [ -> adults-go-home ]
+    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+  ] [
+    ifelse drugsDelivered? = true [
+      set next-task [ -> fetch-drugs ]
+    ] [
+      set dest [ -> adults-go-home ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
     ]
-    [
-      set dest [-> adults-go-home]
-      set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
-    ]
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;remove this once the children have been implemented
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ]
- 
-
-  
+  ]  
 end
 
 to fetch-drugs
-    ifelse distance pickUpPlace > 1 [
-      face pickUpPlace
-      forward 0.5
-  ]
-  [
+  ifelse distance pickUpPlace > 1 [
+    face pickUpPlace
+    forward 0.5
+  ] [
     set hasDrugs? true
     set drugsDelivered? false
     set color green
-    ask pickUpPlace[
-      set drugs (drugs - 1)
-    ]
-    set dest [-> adults-go-home]
-    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    ask pickUpPlace [ set drugs drugs - 1 ]
+    set dest [ -> adults-go-home ]
+    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
 end
 
-to adults-get-paid
+; Increases the amount of money a given agent has.
+;
+; agent (input): A turtle with a 'money' variable.
+; amount (input): The amount the given turtle's 'money' should increase by.
+to adults-earn-money [ agent amount ]
+  ask agent [ set money money + amount ]
 end
 
-to adults-spend-money
+; Decreases the amount of money a given agent has.
+; Does not prevent the total capital to reach negative numbers.
+; Relies on outside checks to prevent purchasing things the agent cannot afford.
+;
+; agent (input): A turtle with a 'money' variable.
+; amount (input): The amount the given turtle's 'money' should decrease by.
+to adults-loose-money [ agent amount ]
+  ask agent [ set money money - amount ]
 end
 
-to adults-move-turtle-pos [source destx desty]
-
+to adults-move-turtle-pos [ source destx desty ]
   ask source [
     if distancexy destx desty > 1 [
       facexy destx desty
       forward 0.5
     ]
   ]
-
 end
-
-
 
 to adults-stopped-by-police
   set state "stopped"
   if stoppedByPolice? = false [
-    set dest [-> adults-go-home]
-    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+    set dest [ -> adults-go-home ]
+    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
   if arrested-time != -1 [
     set next-task [ -> adults-go-to-jail ]
@@ -231,18 +234,17 @@ to adults-stopped-by-police
 end
 
 to adults-go-to-jail
-  ifelse distance min-one-of (prison) [distance myself]> 1 [
-    set heading towards-nowrap one-of prison with [count turtles-here = 0]
+  ifelse distance min-one-of prison [ distance myself ] > 1 [
+    set heading towards-nowrap one-of prison with [ count turtles-here = 0 ]
     forward 0.5
-  ]
-  
-  [
+  ] [
     if ticks - arrested-time = 500 * numberOfConvictions [
       set arrested-time -1
       set color white
       set stoppedByPolice? false
-      set dest [-> adults-go-home]
-      set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
+      adults-losing-job self
+      set dest [ -> adults-go-home ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
     ]
   ]
 end
