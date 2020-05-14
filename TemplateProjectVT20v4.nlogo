@@ -595,8 +595,11 @@ true
 true
 "" ""
 PENS
-"General TRIST" 1.0 0 -16777216 true "" "plot trist-value"
-"Average of Individual TRIST" 1.0 0 -2674135 true "" "let average 0\nask adults [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
+"Generic" 1.0 0 -16777216 true "" "plot trist-value"
+"Average of Individual" 1.0 0 -2674135 true "" "let average 0\nask adults [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
+"Average of Upperclass" 1.0 0 -13840069 true "" "let average 0\nask adults with [ homeArea = 1 ] [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
+"Average of Middleclass" 1.0 0 -13791810 true "" "let average 0\nask adults with [ homeArea = 2 ] [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
+"Average of Lowerclass" 1.0 0 -6459832 true "" "let average 0\nask adults with [ homeArea = 3 ] [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
 
 @#$#@#$#@
 ## WHAT IS IT?
