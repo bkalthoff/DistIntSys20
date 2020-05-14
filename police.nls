@@ -166,7 +166,7 @@ to search-place
   let hideout-to-search hideouts-here
     if [drugs] of (one-of hideout-to-search) > 0 or [weapons]  of (one-of hideout-to-search) > 0
     [set status status + 1]
-    print self print status
+    
   ask hideout-to-search [
     set weapons 0
     set drugs 0
@@ -175,13 +175,13 @@ to search-place
     ask police [
       set list-of-known-hideouts lput hideout-to-search list-of-known-hideouts
       set list-of-known-hideouts remove-duplicates list-of-known-hideouts
-    show list-of-known-hideouts
+   
     ]
   ][
     let stash-houses-to-search stash-houses-here
     if [drugs] of (one-of stash-houses-to-search) > 0 or [weapons]  of (one-of stash-houses-to-search) > 0
     [set status status + 1]
-    print self print status
+  
     ask stash-houses-to-search [
         set weapons 0
         set drugs 0

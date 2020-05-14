@@ -157,6 +157,7 @@ ask turtles[
   ;
   set time time + 1
   if (time = 1200)[
+    ask adults[set color white set hasDrugs? false]
    set time 0
   ]
   tick
@@ -369,7 +370,7 @@ number-of-children
 number-of-children
 0
 40
-30.0
+7.0
 1
 1
 NIL
@@ -384,7 +385,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-3.0
+6.0
 1
 1
 NIL
@@ -399,7 +400,7 @@ number-of-police
 number-of-police
 0
 50
-2.0
+1.0
 1
 1
 NIL
@@ -414,7 +415,7 @@ number-of-adults
 number-of-adults
 0
 30
-2.0
+16.0
 1
 1
 NIL
@@ -429,7 +430,7 @@ number-of-stash-houses
 number-of-stash-houses
 1
 5
-2.0
+5.0
 1
 1
 NIL
@@ -459,7 +460,7 @@ number-of-hideouts
 number-of-hideouts
 1
 5
-2.0
+3.0
 1
 1
 NIL
@@ -489,7 +490,7 @@ number-of-child-gangsters
 number-of-child-gangsters
 0
 20
-1.0
+3.0
 1
 1
 NIL

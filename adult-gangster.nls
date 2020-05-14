@@ -82,8 +82,9 @@ to setup-adult-Gangster
     set isWorking? false
     set drugOrders[]
     set night-time 0
+    set drugPrice 450 + random 100 
     
-    ;print self print gangMembers
+  
   ]
 
   ask one-of adult-gangsters with [gang = red] [

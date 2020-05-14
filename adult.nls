@@ -94,7 +94,7 @@ end
 
 to adults-work
   set state "work"
-  set money money + 1
+  set money money + random 2
   ifelse (random 500 = 0)
   [
     set dest [-> adults-go-home]
@@ -156,20 +156,27 @@ to adults-consuming-drugs
   [
     set priceLimitDrugs random 10
     set orderedDrugs? true
-    ;order the drugs
-    ask one-of adult-gangsters [ 
-      ifelse ( [priceLimitDrugs] of myself >= drugPrice)[
-        print "drugOrder on 1st attempt"
+    let drugsBought 0
+    ask one-of adult-gangsters [
+      
+      ifelse ( [money] of myself >= drugPrice)[
+        set drugsBought drugPrice
+        print "drugOrder on 1st attempt" print drugPrice
       set drugOrders lput myself drugOrders
       show drugOrders
       ] [
-        ifelse (drugPrice - [priceLimitDrugs] of myself <= 2)[ print "drugOrder on 2nd attempt"
+        ifelse (drugPrice - [money] of myself <= 50)[
+          
+          set drugsBought drugPrice - 50
+          print "drugOrder on 2nd attempt" print drugPrice
       set drugOrders lput myself drugOrders
       show drugOrders
       ][print "2nd attempt failed"]
       
     ]
-  ]]
+  ]
+  set money money - drugsBought
+  set drugsBought 0]
     
     [set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
@@ -202,7 +209,7 @@ to fetch-drugs
   [
     set hasDrugs? true
     set drugsDelivered? false
-    set oreredDrugs? false
+    set orderedDrugs? false
     set color green
     ask pickUpPlace[
       set drugs (drugs - 1)
