@@ -274,6 +274,16 @@ end
 ; Reports an individually based TRIST-value based on the general TRIST-value
 to-report adults-trist-value [ agent ]
   let trist 0
-  ask agent [ set trist trist-value * (4 - homeArea) ]
+  let popDensity count turtles with [ pcolor = [ pcolor ] of agent ]
+  let totalPop count adults + count children + count child-gangsters + count police + count adult-gangsters
+  let maxMoney max-one-of adults [ money ]
+  set maxMoney [ money ] of maxMoney
+  let bestHomeArea min-one-of adults [ homeArea ]
+  set bestHomeArea [ homeArea ] of bestHomeArea
+  let worstHomeArea max-one-of adults [ homeArea ]
+  set worstHomeArea [ homeArea ] of worstHomeArea
+  let iJob ifelse-value [ job? ] of agent [ 0 ] [ 1 ]
+  ask agent [ set trist trist-value * (popDensity * homeArea * (money - (money / 2) * iJob)) / (totalPop * bestHomeArea * maxMoney) ]
+  
   report trist
 end
