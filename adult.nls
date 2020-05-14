@@ -173,7 +173,10 @@ to adults-consuming-drugs
     if money >= 50 [             ; Can agent afford?
       adults-loose-money self 50 ; Pay for drugs
       set orderedDrugs? true
-      ask one-of adult-gangsters with [ isWorking? = true ] [ set drugOrders lput myself drugOrders ]
+      let tmp one-of adult-gangsters with [ isWorking? = true ]
+      if tmp != nobody [ 
+        ask tmp [ set drugOrders lput myself drugOrders ] 
+      ]
     ]
     set dest [ -> adults-go-home ]
     set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
@@ -256,6 +259,7 @@ to adults-stopped-by-police
     set done-negotiating? false
     set next-task [ -> adults-go-to-jail ]
     set state "jail"
+    set inPrison? true
   ]
   
 end
@@ -283,11 +287,11 @@ end
 ; it will only walk around in the prison never walking outside of the grey area. 
 to adult-in-prison
   
-  
   ifelse ticks - arrested-time = 500 * numberOfConvictions [
     set arrested-time -1
     set color white
     set stoppedByPolice? false
+    set inPrison? false
     set dest [-> adults-go-home]
     set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
     
@@ -299,6 +303,21 @@ to adult-in-prison
     ][
       right 180      
       forward 0.5
+    ]
+  ]
+  
+  if random 1000 < 5 [
+    
+    let closestGangster min-one-of adult-gangsters in-radius 20 [distance myself]
+    if closestGangster != nobody[
+      set breed adult-gangsters
+      set size 2
+      set shape "person"
+      set label ""
+      set gang [gang] of closestGangster
+      set color [color] of closestGangster
+      
+      set next-task[-> adult-gangster-go-home]
     ]
   ]
   
