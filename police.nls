@@ -19,12 +19,15 @@ police-own [
   list-of-known-gangsters
   chance-of-finding-gangster
   
+  loyal  
+  police-money-limit
 ]
 
 to setup-police
   
   create-police number-of-police
   [
+    set police-money-limit 600 + random 200
     set shape  "person police"
     set color blue
     set search-tick 0
@@ -78,8 +81,10 @@ to move-police
   
   ifelse any? (adults-here with [ stoppedByPolice? = false and state != "work" ]) [
     let target one-of adults-here
+    let polle self
     ask target [
       set stoppedByPolice? true
+      set police-ID polle
     ]
     set person-to-search target
     set next-task [ -> search-person ]
@@ -105,24 +110,62 @@ end
 to search-person
   set ImOccupied 1
   set search-tick search-tick + 1
-  if search-tick = 10[
-    ask person-to-search [
-      ifelse hasDrugs? = true [
-        set numberOfConvictions numberOfConvictions + 1
-        set color yellow
-        set hasDrugs? false
-        set arrested-time ticks 
+  if search-tick >= 10[
+    ifelse [done-negotiating?] of person-to-search = false [
+      if [turn-to-negotiate] of person-to-search = 2 [
+        ifelse [offered-money] of person-to-search >= police-money-limit  [
+          ask person-to-search [
+            set stoppedByPolice? false
+            set done-negotiating? true
+            set turn-to-negotiate 1
+            set money money - offered-money
+          ]
+          set next-task [ -> move-police ]
+        set search-tick 0
       ]
       [
-        set stoppedByPolice? false
+          ask person-to-search [set turn-to-negotiate turn-to-negotiate + 1]
+        ]
+      ]
+      if [turn-to-negotiate] of person-to-search = 4 [
+        ifelse [offered-money] of person-to-search >= police-money-limit [
+          ask person-to-search [
+            set stoppedByPolice? false
+            set done-negotiating? true
+            set turn-to-negotiate 1
+            set money money - offered-money
+            
+          ]
+          set next-task [ -> move-police ]
+        set search-tick 0
+      ]
+      [
+        ask person-to-search [
+            set done-negotiating? true
+            set turn-to-negotiate 1
+          ]
+        ]
       ]
     ]
-    ifelse [ arrested-time ] of person-to-search != -1 [
-      set next-task [ -> police-go-to-jail ]
+    [
+      ask person-to-search [
+        ifelse hasDrugs? = true [
+          set numberOfConvictions numberOfConvictions + 1
+          set color yellow
+          set hasDrugs? false
+          set arrested-time ticks 
+        ]
+        [
+          set stoppedByPolice? false
+        ]
+      ]
+      ifelse [ arrested-time ] of person-to-search != -1 [
+        set next-task [ -> police-go-to-jail ]
+      ]
+      [ set ImOccupied 0
+        set next-task [ -> move-police ] ]
+      set search-tick 0
     ]
-    [ set ImOccupied 0
-      set next-task [ -> move-police ] ]
-    set search-tick 0
   ]
 end
 to police-go-to-jail

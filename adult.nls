@@ -20,6 +20,11 @@ adults-own [
   drugsDelivered?
   
   numberOfConvictions
+  
+  turn-to-negotiate
+  done-negotiating?
+  offered-money
+  police-ID
 ]
 
 to setup-adults
@@ -45,6 +50,8 @@ to setup-adults
     set inPrison? false
     set drugsDelivered? false
     set numberOfConvictions 0
+    set turn-to-negotiate 1
+    set done-negotiating? false
   ]
   
   ask adults [
@@ -95,17 +102,18 @@ to adults-go-home
 end
 
 to adults-work
+  set money money + 1
   set state "work"
   (ifelse
     color = green [
       adults-losing-job self
       set dest [ -> adults-go-home ]
       set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
-  ]
-  time = 850 [
-    adults-earn-money self salary ; Gives agent salary at the end of the day
-    set dest [ -> adults-go-home ]
-    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+    ]
+    time = 850 [
+      adults-earn-money self salary ; Gives agent salary at the end of the day
+      set dest [ -> adults-go-home ]
+      set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ])
 end
 
@@ -165,7 +173,10 @@ to adults-consuming-drugs
     if money >= 50 [             ; Can agent afford?
       adults-loose-money self 50 ; Pay for drugs
       set orderedDrugs? true
-      ask one-of adult-gangsters with [ isWorking? = true ] [ set drugOrders lput myself drugOrders ]
+      let tmp one-of adult-gangsters with [ isWorking? = true ]
+      if tmp != nobody [ 
+        ask tmp [ set drugOrders lput myself drugOrders ] 
+      ]
     ]
     set dest [ -> adults-go-home ]
     set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
@@ -222,14 +233,35 @@ end
 
 to adults-stopped-by-police
   set state "stopped"
+  if hasDrugs? = false [
+    set done-negotiating? true
+  ]
+  if [search-tick] of police-ID >= 10 [
+    
+    if done-negotiating? = false [
+      if turn-to-negotiate = 1 [
+        set offered-money money / 2
+        set turn-to-negotiate turn-to-negotiate + 1
+      ]
+      if turn-to-negotiate = 3 [
+        set offered-money money
+        set turn-to-negotiate turn-to-negotiate + 1
+      ]
+      
+    ]
+  ]
   if stoppedByPolice? = false [
-    set dest [ -> adults-go-home ]
-    set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
+    set done-negotiating? false
+    set dest [-> adults-go-home]
+    set next-task[-> adults-walk array:item homexy 0 array:item homexy 1 ]
   ]
   if arrested-time != -1 [
+    set done-negotiating? false
     set next-task [ -> adults-go-to-jail ]
     set state "jail"
+    set inPrison? true
   ]
+  
 end
 
 
@@ -245,6 +277,8 @@ to adults-go-to-jail
     forward 2
     set next-task [ -> adult-in-prison ]
   ]
+  
+  
 end
 
 ; adult-in-prison handles the adults time in prison 
@@ -257,6 +291,7 @@ to adult-in-prison
     set color white
     set stoppedByPolice? false
     adults-losing-job self
+    set inPrison? false
     set dest [ -> adults-go-home ]
     set next-task [ -> adults-walk array:item homexy 0 array:item homexy 1 ]
   ] [
@@ -267,6 +302,19 @@ to adult-in-prison
     ] [
       right 180      
       forward 0.5
+    ]
+  ]
+
+  if random 1000 < 5 [  
+    let closestGangster min-one-of adult-gangsters in-radius 20 [ distance myself ]
+    if closestGangster != nobody [
+      set breed adult-gangsters
+      set size 2
+      set shape "person"
+      set label ""
+      set gang [gang] of closestGangster
+      set color [ color ] of closestGangster
+      set next-task[ -> adult-gangster-go-home ]
     ]
   ]
 end
@@ -285,5 +333,6 @@ to-report adults-trist-value [ agent ]
   let iJob ifelse-value [ job? ] of agent [ 0 ] [ 1 ]
   ask agent [ set trist trist-value * (popDensity * homeArea * (money - (money / 2) * iJob)) / (totalPop * bestHomeArea * maxMoney) ]
   
+
   report trist
 end

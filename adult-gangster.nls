@@ -219,12 +219,14 @@ to adult-gangster-work
   
   set isWorking? true
   
-  ifelse empty? drugOrders = false [set next-task [-> drug-order]] [ 
+  ifelse empty? drugOrders = false 
+  [
+    set next-task [-> drug-order]
+  ][ 
     right random 45
     left random 45
     forward 0.5
     set next-task [ -> adult-gangster-idle]
-    
   ]
   
   if adult-gangster-drugs-delivered? = true [
