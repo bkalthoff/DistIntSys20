@@ -6,14 +6,20 @@ adult-gangsters-own [
   hometerritory
   home-id
   next-task
-  stoppedByPolice
-  stoppedByAdult
+  stoppedByPolice?
+  stoppedByAdult?
   isCarryingDrugs
   gangster-hideout
   homexy array
-  
+  police-ID
+  done-negotiating?
+  numberOfConvictions
   gangMembers
   gang
+  arrested-time
+  turn-to-negotiate
+  inPrison?
+  drugs-sold
   
   
   adult-current-customer
@@ -80,8 +86,13 @@ to setup-adult-Gangster
     [setupGangmembers blue]
     
     set isWorking? false
-    set drugOrders[]
+    set drugOrders []
+    set numberOfConvictions 0
+    set stoppedByPolice? false
+    set arrested-time -1
     set night-time 0
+    set inPrison? false
+    set drugs-sold 0
     
     ;print self print gangMembers
   ]
@@ -131,7 +142,7 @@ to adult-gangster-idle
     set distrust distrust - 10
   ]
 
-  ifelse stoppedByPolice = "true" [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
+  ifelse stoppedByPolice? = true [set next-task  [ -> adult-gangster-stand]][        ; highest priority is to stand still if STOPPED
                                                                                       ;set hidden? false                                                ; for demo purpose
     let policeClose police in-cone 4 35                                               ; see if there is police in the gangsters line of sight
     ifelse any? policeClose [set next-task [ -> adult-gangster-hide]] [ ; police is in line of sight hide
@@ -182,11 +193,27 @@ end
 ; the stoppedByPolice should be toggled by the police when they are finished searching the gangster
 ;
 to adult-gangster-stand
+  if [ search-tick ] of police-ID >= 10 [
+    if done-negotiating? = false [
+      if turn-to-negotiate = 1 [
+        set offered-money money / 2
+        set turn-to-negotiate turn-to-negotiate + 1
+      ]
+      if turn-to-negotiate = 3 [
+        set offered-money money
+        set turn-to-negotiate turn-to-negotiate + 1
+      ]
+    ]
+  ]
   
-  set stoppedByPolice "false"                                               ; this should be toggled by the police 
-  fd 0
-  set next-task [-> adult-gangster-idle]      
-  
+  if arrested-time != -1 [
+    set done-negotiating? false
+    set next-task [ -> adult-gangsters-go-to-prison ]
+    set inPrison? true
+  ]
+  if stoppedByPolice? = false [
+    set next-task [ -> adult-gangster-go-home ]
+  ]
 end
 
 
@@ -218,7 +245,6 @@ to adult-gangster-work
   
   
   set isWorking? true
-  
   ifelse empty? drugOrders = false 
   [
     set next-task [-> drug-order]
@@ -241,7 +267,7 @@ to confirm-delivery [place-to-pickup]
     set pickUpPlace place-to-pickup
     set drugsDelivered? true
   ]
-  
+  set drugs-sold drugs-sold + 1
   set adult-gangster-drugs-delivered? false
   set next-task[-> adult-gangster-idle]
   
@@ -268,7 +294,7 @@ to drug-order
   ;set drugOrders remove-item 0 drugOrders  ;-- this should remove the order only when the drugs are delivered. 
   ;show drugOrders
   set size 1
-  set stoppedByAdult "false"    
+  set stoppedByAdult? false    
   set next-task [-> adult-gangster-idle]
 end
 
@@ -315,12 +341,32 @@ to assign-leader [gang-color]
   
 end
 
+to adult-gangsters-go-to-prison
+  ifelse distance min-one-of prison [ distance myself ] > 1 [
+    set heading towards-nowrap one-of prison with [ count turtles-here = 0 ]
+    forward 0.5
+  ] [
+    forward 2
+    set inPrison? true
+    set next-task [ -> adult-gangsters-in-prison ]
+  ]
+end
 
-
-
-
-
-
-
-
-
+to adult-gangsters-in-prison
+  ifelse ticks - arrested-time = 250 * (numberOfConvictions + 2 * drugs-sold) [
+    set arrested-time -1
+    set color gang + 2
+    set stoppedByPolice? false
+    set inPrison? false
+    set next-task [ -> adult-gangster-go-home ]
+  ] [
+    ifelse [ pcolor ] of patch-ahead 0.5 = grey [
+      right random 45
+      left random 45
+      forward 0.5
+    ] [
+      right 180      
+      forward 0.5
+    ]
+  ]
+end

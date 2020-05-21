@@ -211,7 +211,7 @@ end
 ; Reports a TRIST-value based on the number of gangsters in prison divided by the total number of gangsters
 to-report trist-value
   let trist 0
-  let total-gangsters count adult-gangsters + count child-gangsters
+  let total-gangsters count adult-gangsters with [ inPrison? = true ]
   let gangsters-in-prison total-gangsters
   set trist gangsters-in-prison / total-gangsters
   report trist
@@ -401,7 +401,7 @@ number-of-adultGangster
 number-of-adultGangster
 0
 50
-3.0
+4.0
 1
 1
 NIL
@@ -600,6 +600,17 @@ PENS
 "Average of Upperclass" 1.0 0 -13840069 true "" "let average 0\nask adults with [ homeArea = 1 ] [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
 "Average of Middleclass" 1.0 0 -13791810 true "" "let average 0\nask adults with [ homeArea = 2 ] [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
 "Average of Lowerclass" 1.0 0 -6459832 true "" "let average 0\nask adults with [ homeArea = 3 ] [\n   set average average + adults-trist-value self\n]\nplot average / count adults"
+
+MONITOR
+299
+218
+418
+263
+Gangsters in prison
+count adult-gangsters with [ inPrison? = true ]
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

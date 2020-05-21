@@ -235,8 +235,9 @@ to adults-stopped-by-police
   set state "stopped"
   if hasDrugs? = false [
     set done-negotiating? true
+    set stoppedByPolice? false
   ]
-  if [search-tick] of police-ID >= 10 [
+  if [ search-tick ] of police-ID >= 10 [
     
     if done-negotiating? = false [
       if turn-to-negotiate = 1 [
@@ -308,13 +309,19 @@ to adult-in-prison
   if random 1000 < 5 [  
     let closestGangster min-one-of adult-gangsters in-radius 20 [ distance myself ]
     if closestGangster != nobody [
+      let prevConvicts numberOfConvictions
+      let prevArrestTime arrested-time
       set breed adult-gangsters
       set size 2
       set shape "person"
       set label ""
+      set inPrison? false
+      set numberOfConvictions prevConvicts
+      set arrested-time prevArrestTime
+      set stoppedByPolice? false
       set gang [gang] of closestGangster
-      set color [ color ] of closestGangster
-      set next-task[ -> adult-gangster-go-home ]
+      set color [ yellow - 4 ] of closestGangster
+      set next-task [ -> adult-gangsters-in-prison ]
     ]
   ]
 end
