@@ -368,5 +368,39 @@ to adult-gangsters-in-prison
       right 180      
       forward 0.5
     ]
+    if any? adults in-cone 1 360 with [inPrison? = true] [
+      let adult-to-recruit one-of adults in-cone 1 360
+      set next-task [ -> adult-gangsters-prison-recruit adult-to-recruit ]
+    ]    
   ]
+end
+
+to adult-gangsters-prison-recruit [to-recruit]
+  if [numberOfConvictions] of to-recruit > 1 or [homeArea] of to-recruit = 1 and [money] of to-recruit < 100 [
+    if random 3 = 0[ ;trist
+      let adult-recruiter who
+      let storeTime [arrested-time] of to-recruit
+      ask to-recruit [
+        set breed adult-gangsters
+        set shape "person"
+        set inPrison? true
+        set numberOfConvictions [numberOfConvictions] of to-recruit
+        set arrested-time storeTime
+        set gang [gang] of adult-gangster adult-recruiter
+        set color gang + 2
+          
+        set homexy array:from-list n-values 2 [0]
+        array:set homexy 0 xcor  array:set homexy 1 ycor   
+        set gangster-hideout min-one-of hideouts [distance myself]
+        setupGangmembers gang
+  
+        set isWorking? false
+        set drugOrders []
+        set stoppedByPolice? false
+        
+        set next-task [ -> adult-gangsters-in-prison ]
+      ]
+    ]
+  ]
+  set next-task [ -> adult-gangsters-in-prison ]
 end
